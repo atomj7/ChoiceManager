@@ -11,11 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Map;
 
-@Controller
+@RestController
 public class RegistrationController {
 
     @Autowired
@@ -31,17 +32,16 @@ public class RegistrationController {
                                                        BindingResult bindingResult){
         Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
         if(userData == null) {
-            return new ResponseEntity<>("data is null" + new Gson().toJson(errorsMap),
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("data is null" + errorsMap, HttpStatus.BAD_REQUEST);
         }
         if (userData.getPassword() != null && !userData.getPassword().equals(userData.getPasswordConfirmation())) {
             errorsMap.put("passwordError", "Password are different!");
-            return new ResponseEntity<>(new Gson().toJson(errorsMap),HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(errorsMap.toString(), HttpStatus.NOT_ACCEPTABLE);
         }
         System.out.println(userData);
         if (bindingResult.hasErrors()) {
             System.out.println(errorsMap.toString());
-            return new ResponseEntity<>("validation error " + new Gson().toJson(errorsMap)  ,HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(errorsMap.toString(), HttpStatus.NOT_ACCEPTABLE);
         }
         if (!userService.addUser(userData)) {
             return  new ResponseEntity<>("user already exist", HttpStatus.I_AM_A_TEAPOT);
