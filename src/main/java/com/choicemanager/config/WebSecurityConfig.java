@@ -1,19 +1,28 @@
 package com.choicemanager.config;
 
+import com.choicemanager.domain.Role;
+import com.choicemanager.domain.User;
+import com.choicemanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@EnableOAuth2Sso
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -38,6 +47,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout()
+                    .logoutSuccessUrl("/")
                     .permitAll()
                 .and()
                     .csrf().disable();
@@ -63,5 +73,29 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery(roleByLoginQuery);
 
     }
+    @Bean
+    PrincipalExtractor principalExtractor(UserRepository userRepository) {
+        return map -> {
+            String id =(String) map.get("sub");
+             User user = userRepository.findById(id).orElseGet(() -> {
+                User newUser = new User();
+
+                newUser.setId(id);
+                newUser.setName((String) map.get("given_name"));
+                newUser.setSurname((String) map.get("family_name"));
+                newUser.setEmail((String) map.get("email"));
+                newUser.setUserPic((String) map.get("picture"));
+                newUser.setLocale((String) map.get("locale"));
+                newUser.setRole(Collections.singleton(Role.USER));
+
+                return newUser;
+            });
+
+            user.setLastVisit(LocalDateTime.now());
+
+            return userRepository.save(user);
+        };
+    }
+
 }
 

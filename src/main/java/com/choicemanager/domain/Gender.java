@@ -1,2 +1,5 @@
-package com.choicemanager.domain;public enum Gender {
+package com.choicemanager.domain;
+
+public enum Gender {
+    MALE, FEMALE;
 }

@@ -1,5 +1,6 @@
 package com.choicemanager.domain;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -16,34 +18,40 @@ import java.util.Set;
 public class User implements Serializable, UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    private String  id;
+
     @Column(name="login", unique = true)
-    @NotNull
-    @NotBlank(message = "Login can not be empty")
     private String login;
+
     @Column(name="email", unique = true)
-    @NotNull
     @NotBlank(message = "Email can not be empty")
     @Email(message = "Please provide a valid email id")
     private String email;
-    @Column(name="password")
-    @NotNull
-    @NotBlank(message = "Password can not be empty")
-    //@Size(min = 7, max = 16, message = "Password must be at least 8 to 16 characters long")
+
     private String password;
+
     @Transient
-    @NotBlank(message = "Password confirmation cannot be empty")
     private String passwordConfirmation;
-    @Column(name="name")
-    @NotNull
+
     @NotBlank(message = "Name can not be empty")
     private String name;
-    @Column(name="surname")
-    @NotNull
+
     @NotBlank(message = "Surname can not be empty")
     private String surname;
-    private boolean isActive;
+
+    private String userPic;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private LocalDateTime lastVisit;
+
+    private boolean active;
+
+    private String locale;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -51,7 +59,7 @@ public class User implements Serializable, UserDetails {
 
     public User() {}
 
-    public User(String login, String email, String password, String name, String surname, String phoneNumber) {
+    public User(String login, String email, String password, String name, String surname) {
         this.login = login;
         this.email = email;
         this.password = password;
@@ -61,14 +69,18 @@ public class User implements Serializable, UserDetails {
 
     public User(User user) {
         this.id = user.getId();
-        this.email = user.getEmail();
         this.login = user.getLogin();
+        this.email = user.getEmail();
         this.password = user.getPassword();
         this.passwordConfirmation = user.getPasswordConfirmation();
         this.name = user.getName();
         this.surname = user.getSurname();
+        this.userPic = user.getUserPic();
+        this.gender = user.getGender();
+        this.lastVisit = user.getLastVisit();
+        this.active = user.active;
+        this.locale = user.getLocale();
         this.role = user.getRole();
-        this.isActive = user.isActive();
     }
 
     @Override
@@ -90,19 +102,19 @@ public class User implements Serializable, UserDetails {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        active = active;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = this.id;
     }
 
     public String getLogin() {
@@ -175,6 +187,13 @@ public class User implements Serializable, UserDetails {
         this.surname = surname;
     }
 
+    public String getUserPic() {
+        return userPic;
+    }
+
+    public void setUserPic(String userPic) {
+        this.userPic = userPic;
+    }
 
     public Set<Role> getRole() {
         return role;
@@ -192,15 +211,46 @@ public class User implements Serializable, UserDetails {
         this.passwordConfirmation = passwordConfirmation;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDateTime getLastVisit() {
+        return lastVisit;
+    }
+
+    public void setLastVisit(LocalDateTime lastVisit) {
+        this.lastVisit = lastVisit;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", login='" + login + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", passwordConfirmation='" + passwordConfirmation + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", userPic='" + userPic + '\'' +
+                ", gender=" + gender +
+                ", lastVisit=" + lastVisit +
+                ", isActive=" + active +
+                ", locale='" + locale + '\'' +
+                ", role=" + role +
                 '}';
     }
 }
