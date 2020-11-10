@@ -14,18 +14,19 @@ public class Question implements Serializable {
     @Id
     private Long id;
 
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
     @Getter
-    @Column(name = "question")
     @NotNull
+    @Column(name = "question")
     private String description;
 
     @Getter
-    @Column(name = "type")
     @NotNull
+    @Column(name = "type")
     private String type;
 
 }
