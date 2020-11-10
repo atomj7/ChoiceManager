@@ -13,26 +13,28 @@ public class Answer implements Serializable {
 
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
-    Question question;
-
-    @Getter
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Setter
     @Getter
-    @Column(name = "value")
     @NotNull
-    private String value;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    User user;
+
+    @Getter
+    @Setter
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
+    Question question;
 
     @Setter
     @Getter
     @NotNull
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "value")
+    private String value;
 
 }
