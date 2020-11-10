@@ -14,7 +14,7 @@ public class HomeController {
 
     @RequestMapping(value = "/home")
     public RedirectView homeRedirectToRoot() {
-        return  new RedirectView("/");
+        return new RedirectView("/");
     }
 
 }

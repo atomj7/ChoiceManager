@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -40,18 +39,19 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers( "/**", "/home","/registration","/user").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers("/**", "/home", "/registration", "/user").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                    .permitAll()
+                .formLogin()
+                .permitAll()
                 .and()
-                    .logout()
-                    .logoutSuccessUrl("/")
-                    .permitAll()
+                .logout()
+                .logoutSuccessUrl("/")
+                .permitAll()
                 .and()
-                    .csrf().disable();
+                .csrf().disable();
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
@@ -73,11 +73,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery(roleByLoginQuery);
 
     }
+
     @Bean
     PrincipalExtractor principalExtractor(UserRepository userRepository) {
         return map -> {
-            String id =(String) map.get("sub");
-             User user = userRepository.findById(id).orElseGet(() -> {
+            String id = (String) map.get("sub");
+            User user = userRepository.findById(id).orElseGet(() -> {
                 User newUser = new User();
 
                 newUser.setId(id);
