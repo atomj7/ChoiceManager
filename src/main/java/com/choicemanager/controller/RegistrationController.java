@@ -27,9 +27,9 @@ public class RegistrationController {
 
     @PostMapping(value = "/registration")
     public ResponseEntity<Object> userRegistration(@RequestBody @Valid User userData,
-                                                       BindingResult bindingResult){
+                                                   BindingResult bindingResult) {
         Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-        if(userData == null) {
+        if (userData == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("data is null" + errorsMap);
         }
@@ -46,7 +46,7 @@ public class RegistrationController {
         }
         if (!userService.addUser(userData)) {
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
-                    Map.of("message","user already exist"));
+                    Map.of("message", "user already exist"));
         }
 
         return new ResponseEntity<>(HttpStatus.CREATED);

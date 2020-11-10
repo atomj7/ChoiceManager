@@ -23,16 +23,16 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<User> profileGet(Principal principal){
+    public ResponseEntity<User> profileGet(Principal principal) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity profilePut(@RequestBody@Valid User userData,
-                                         BindingResult bindingResult,
+    public ResponseEntity profilePut(@RequestBody @Valid User userData,
+                                     BindingResult bindingResult,
                                      Model model) {
         Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-        if(userData == null) {
+        if (userData == null) {
             return new ResponseEntity<>("data is null" + errorsMap, HttpStatus.BAD_REQUEST);
         }
         if (bindingResult.hasErrors()) {

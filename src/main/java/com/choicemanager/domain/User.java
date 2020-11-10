@@ -2,12 +2,12 @@ package com.choicemanager.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -20,14 +20,14 @@ import java.util.Set;
 public class User implements Serializable, UserDetails {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-    private String  id;
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    private String id;
 
-    @Column(name="login", unique = true)
+    @Column(name = "login", unique = true)
     private String login;
 
-    @Column(name="email", unique = true)
+    @Column(name = "email", unique = true)
     @NotBlank(message = "Email can not be empty")
     @Email(message = "Please provide a valid email id")
     private String email;
@@ -59,7 +59,8 @@ public class User implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> role;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String login, String email, String password, String name, String surname) {
         this.login = login;
@@ -90,10 +91,10 @@ public class User implements Serializable, UserDetails {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return active == user.active &&
-                Objects.equals(id, user.id) &&
-                Objects.equals(login, user.login) &&
-                Objects.equals(email, user.email) &&
+
+        return getId().equals(user.getId()) &&
+                Objects.equals(getLogin(), user.getLogin()) &&
+                Objects.equals(getEmail(), user.getEmail()) &&
                 Objects.equals(getPassword(), user.getPassword()) &&
                 Objects.equals(passwordConfirmation, user.passwordConfirmation) &&
                 Objects.equals(name, user.name) &&
@@ -113,10 +114,6 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRole();
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override
