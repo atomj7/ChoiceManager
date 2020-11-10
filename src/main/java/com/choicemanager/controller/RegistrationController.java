@@ -2,14 +2,9 @@ package com.choicemanager.controller;
 
 import com.choicemanager.domain.User;
 import com.choicemanager.service.UserService;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
