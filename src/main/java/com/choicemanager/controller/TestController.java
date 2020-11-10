@@ -4,6 +4,7 @@ import com.choicemanager.domain.*;
 import com.choicemanager.repository.AnswerRepository;
 import com.choicemanager.repository.CategoryRepository;
 import com.choicemanager.repository.QuestionRepository;
+import com.choicemanager.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,14 @@ public class TestController {
     private final AnswerRepository answerRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
     public TestController(AnswerRepository answerRepository, CategoryRepository categoryRepository,
-                          QuestionRepository questionRepository) {
+                          QuestionRepository questionRepository, UserRepository userRepository) {
         this.answerRepository = answerRepository;
         this.categoryRepository = categoryRepository;
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/test")
@@ -62,6 +65,7 @@ public class TestController {
     public ResponseEntity<?> save(@RequestBody Iterable<Answer> answerList) {
         ArrayList<Answer> createdAnswerList = new ArrayList<>();
         for (Answer answer : answerList) {
+            String userId = answer.getUser().getId();
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
             Optional<Question> questionOptional = questionRepository.findById(questionId);
@@ -70,7 +74,7 @@ public class TestController {
                 return new ResponseEntity<>(new CustomErrorResponse(
                         LocalDateTime.now(),
                         HttpStatus.NOT_FOUND.value(),
-                        "Incorrect question id : " + questionId
+                        "Incorrect or non-existent question id : " + questionId
                 ), HttpStatus.NOT_FOUND);
             }
 
@@ -95,9 +99,18 @@ public class TestController {
                 }
             }
 
-            //TODO: userId handling
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isEmpty()) {
+                return new ResponseEntity<>(new CustomErrorResponse(
+                        LocalDateTime.now(),
+                        HttpStatus.NOT_FOUND.value(),
+                        "Incorrect or non-existent user id : " + userId
+                ), HttpStatus.NOT_FOUND);
+            }
 
+            User user = userOptional.get();
             answer.setQuestion(question);
+            answer.setUser(user);
             Answer createdAnswer = answerRepository.save(answer);
             if (createdAnswer == null) {
                 return ResponseEntity.notFound().build();
@@ -105,7 +118,7 @@ public class TestController {
                 createdAnswerList.add(createdAnswer);
             }
         }
-        return ResponseEntity.ok(createdAnswerList);
+        return ResponseEntity.ok(createdAnswerList.stream().map(Answer::getId));
     }
 
 }
