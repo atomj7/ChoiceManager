@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -41,9 +42,18 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(8);
     }
 
+    @Bean
+    CorsFilter corsFilter() {
+        CorsFilter filter = new CorsFilter();
+        return filter;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                    .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your custom CorsFilter
+                    .exceptionHandling()
+                .and()
                     .authorizeRequests()
                     .antMatchers("/**", "/home", "/registration", "/user").permitAll()
                     .anyRequest().authenticated()
