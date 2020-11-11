@@ -51,9 +51,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                    .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your custom CorsFilter
-                    .exceptionHandling()
-                .and()
+        .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your custom CorsFilter
+                .exceptionHandling().and()
                     .authorizeRequests()
                     .antMatchers("/**", "/home", "/registration", "/user").permitAll()
                     .anyRequest().authenticated()
