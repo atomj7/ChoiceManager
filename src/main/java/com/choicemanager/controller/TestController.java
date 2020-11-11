@@ -65,16 +65,15 @@ public class TestController {
     public ResponseEntity<?> save(@RequestBody Iterable<Answer> answerList) {
         ArrayList<Answer> createdAnswerList = new ArrayList<>();
         for (Answer answer : answerList) {
-            String userId = answer.getUser().getId();
+            Long userId = answer.getUser().getId();
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
             Optional<Question> questionOptional = questionRepository.findById(questionId);
 
             if (questionOptional.isEmpty()) {
                 return new ResponseEntity<>(new CustomErrorResponse(
-                        LocalDateTime.now(),
-                        HttpStatus.NOT_FOUND.value(),
-                        "Incorrect or non-existent question id : " + questionId
+                        "Incorrect or non-existent question id : " + questionId,
+                        HttpStatus.NOT_FOUND.value()
                 ), HttpStatus.NOT_FOUND);
             }
 
@@ -84,17 +83,15 @@ public class TestController {
                     double doubleValue = Double.parseDouble(value);
                     if (Double.parseDouble(value) < 0) {
                         return new ResponseEntity<>(new CustomErrorResponse(
-                                LocalDateTime.now(),
-                                HttpStatus.BAD_REQUEST.value(),
-                                "The value must be positive"
+                                "The value must be positive",
+                                HttpStatus.BAD_REQUEST.value()
                         ), HttpStatus.BAD_REQUEST);
                     }
                     answer.setValue(Double.toString(doubleValue));//"1" to "1.0"
                 } else {
                     return new ResponseEntity<>(new CustomErrorResponse(
-                            LocalDateTime.now(),
-                            HttpStatus.BAD_REQUEST.value(),
-                            "Value type does not match the question type. Value must be of type Double"
+                            "Value type does not match the question type. Value must be of type Double",
+                            HttpStatus.BAD_REQUEST.value()
                     ), HttpStatus.BAD_REQUEST);
                 }
             }
@@ -102,9 +99,8 @@ public class TestController {
             Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isEmpty()) {
                 return new ResponseEntity<>(new CustomErrorResponse(
-                        LocalDateTime.now(),
-                        HttpStatus.NOT_FOUND.value(),
-                        "Incorrect or non-existent user id : " + userId
+                        "Incorrect or non-existent user id : " + userId,
+                        HttpStatus.NOT_FOUND.value()
                 ), HttpStatus.NOT_FOUND);
             }
 

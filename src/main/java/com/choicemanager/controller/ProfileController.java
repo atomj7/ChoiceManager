@@ -2,6 +2,7 @@ package com.choicemanager.controller;
 
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.UserRepository;
+import com.choicemanager.utils.ErrorUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -31,7 +32,7 @@ public class ProfileController {
     public ResponseEntity profilePut(@RequestBody @Valid User userData,
                                      BindingResult bindingResult,
                                      Model model) {
-        Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+        Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (userData == null) {
             return new ResponseEntity<>("data is null" + errorsMap, HttpStatus.BAD_REQUEST);
         }

@@ -1,33 +1,29 @@
 package com.choicemanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class CustomErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    @Setter
-    @Getter
     private LocalDateTime timestamp;
 
-    @Setter
-    @Getter
-    private int status;
-
-    @Setter
-    @Getter
     private String error;
+    private int status;
+    {
+        this.timestamp = LocalDateTime.now();
+    }
 
     public CustomErrorResponse() {
     }
 
-    public CustomErrorResponse(LocalDateTime timestamp, int status, String error) {
-        this.timestamp = timestamp;
-        this.status = status;
+    public CustomErrorResponse(String error, int status) {
         this.error = error;
+        this.status = status;
+
     }
 
 }

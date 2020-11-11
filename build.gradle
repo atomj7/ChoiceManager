@@ -29,6 +29,8 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-test'
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.1.RELEASE')
+	compile('org.flywaydb:flyway-core')
+	compile('org.springframework.boot:spring-boot-starter-mail')
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

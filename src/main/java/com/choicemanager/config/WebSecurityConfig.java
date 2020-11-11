@@ -3,6 +3,7 @@ package com.choicemanager.config;
 import com.choicemanager.domain.Role;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.UserRepository;
+import com.choicemanager.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
@@ -13,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -21,35 +21,41 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@EnableOAuth2Sso
+//@EnableOAuth2Sso
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private DataSource dataSource;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final DataSource dataSource;
 
+    private final RoleService roleService;
+
+    WebSecurityConfig(DataSource dataSource,
+                      RoleService roleService) {
+        this.dataSource = dataSource;
+        this.roleService = roleService;
+    }
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(8);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/**", "/home", "/registration", "/user").permitAll()
-                .anyRequest().authenticated()
+                    .authorizeRequests()
+                    .antMatchers("/**", "/home", "/registration", "/user").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .permitAll()
+                    .formLogin()
+                    .permitAll()
                 .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                .permitAll()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .permitAll()
                 .and()
-                .csrf().disable();
+                    .csrf().disable();
     }
 
     @Override
@@ -74,29 +80,27 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    PrincipalExtractor principalExtractor(UserRepository userRepository) {
+   /* PrincipalExtractor principalExtractor(UserRepository userRepository) {
         return map -> {
-            String id = (String) map.get("sub");
-            User user = userRepository.findById(id).orElseGet(() -> {
-                User newUser = new User();
-
-                newUser.setId(id);
+            User newUser = new User();
+            String email = (String) map.get("email");
+            try {
+                newUser = userRepository.findByEmail(email);
+            } catch (NullPointerException e) {
+                newUser.setGoogleAuthId((String) map.get("sdf"));
                 newUser.setName((String) map.get("given_name"));
                 newUser.setSurname((String) map.get("family_name"));
                 newUser.setEmail((String) map.get("email"));
                 newUser.setUserPic((String) map.get("picture"));
                 newUser.setLocale((String) map.get("locale"));
-                newUser.setRole(Collections.singleton(Role.USER));
+                newUser.setRoles(roleService.addRole(
+                        Collections.singleton(new Role(1L, "ROLE_USER"))));
+            }
+           newUser.setLastVisit(LocalDateTime.now());
 
-                return newUser;
-            });
-
-            user.setLastVisit(LocalDateTime.now());
-
-            return userRepository.save(user);
+            return userRepository.save(newUser);
         };
-    }
+    }*/
 
 }
 

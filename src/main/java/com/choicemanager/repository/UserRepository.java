@@ -2,11 +2,15 @@ package com.choicemanager.repository;
 
 import com.choicemanager.domain.User;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends CrudRepository<User, String> {
+import java.util.Optional;
+
+public interface UserRepository extends CrudRepository<User, Long> {
     User findByLogin(String login);
+    User findByGoogleAuthId(String googleAuthId);
+    User findByEmail(String email);
+    User findByActivationCode(String code);
 
-    User findByEmail(String login);
+    @Override
+    Optional<User> findById(Long aLong);
 }

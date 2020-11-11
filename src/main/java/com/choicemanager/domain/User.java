@@ -1,7 +1,8 @@
 package com.choicemanager.domain;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,23 +12,23 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
 @Table(name="usr")
+@Data
+@ToString
+@EqualsAndHashCode
 public class User implements Serializable, UserDetails {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    private String id;
+    @GeneratedValue
+    private Long id;
 
-    @Column(name = "login", unique = true)
+    @Column(unique = true)
     private String login;
 
-    @Column(name = "email", unique = true)
+    @Column(unique = true)
     @NotBlank(message = "Email can not be empty")
     @Email(message = "Please provide a valid email id")
     private String email;
@@ -54,10 +55,14 @@ public class User implements Serializable, UserDetails {
 
     private String locale;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> role;
+    private String googleAuthId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Role> roles;
+
+    private String activationCode;
+
+    private boolean isActivated;
 
     public User() {
     }
@@ -83,37 +88,13 @@ public class User implements Serializable, UserDetails {
         this.lastVisit = user.getLastVisit();
         this.active = user.active;
         this.locale = user.getLocale();
-        this.role = user.getRole();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-
-        return getId().equals(user.getId()) &&
-                Objects.equals(getLogin(), user.getLogin()) &&
-                Objects.equals(getEmail(), user.getEmail()) &&
-                Objects.equals(getPassword(), user.getPassword()) &&
-                Objects.equals(passwordConfirmation, user.passwordConfirmation) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(surname, user.surname) &&
-                Objects.equals(userPic, user.userPic) &&
-                gender == user.gender &&
-                Objects.equals(lastVisit, user.lastVisit) &&
-                Objects.equals(locale, user.locale) &&
-                Objects.equals(role, user.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, login, email, getPassword(), passwordConfirmation, name, surname, userPic, gender, lastVisit, active, locale, role);
+        this.roles = user.getRoles();
+        this.googleAuthId = user.getGoogleAuthId();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRole();
+        return getRoles();
     }
 
     @Override
@@ -141,22 +122,7 @@ public class User implements Serializable, UserDetails {
         return isActive();
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", passwordConfirmation='" + passwordConfirmation + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", userPic='" + userPic + '\'' +
-                ", gender=" + gender +
-                ", lastVisit=" + lastVisit +
-                ", isActive=" + active +
-                ", locale='" + locale + '\'' +
-                ", role=" + role +
-                '}';
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
