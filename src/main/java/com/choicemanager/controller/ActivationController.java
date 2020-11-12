@@ -21,10 +21,10 @@ public class ActivationController {
     @PostMapping("/activate/{code}")
     public ResponseEntity<?> activate(@PathVariable String code) {
         return userService.activateUser(code) ?
-        ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(Map.of("message",
-                        "User successfully activated"))
-        : ResponseEntity.status(HttpStatus.FORBIDDEN)
+                ResponseEntity.status(HttpStatus.ACCEPTED)
+                        .body(Map.of("message",
+                                "User successfully activated"))
+                : ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of("message",
                         "Activation code is not found!"));
     }

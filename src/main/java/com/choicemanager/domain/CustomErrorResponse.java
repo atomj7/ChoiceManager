@@ -13,6 +13,7 @@ public class CustomErrorResponse {
 
     private String error;
     private int status;
+
     {
         this.timestamp = LocalDateTime.now();
     }
@@ -23,7 +24,6 @@ public class CustomErrorResponse {
     public CustomErrorResponse(String error, int status) {
         this.error = error;
         this.status = status;
-
     }
 
 }

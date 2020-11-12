@@ -1,16 +1,16 @@
 package com.choicemanager.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.ArrayList;
 
+@Data
 public class CategoryWrapper {
-    @Getter
-    @Setter
+
     private ArrayList<Category> categories;
 
     public CategoryWrapper() {
         categories = new ArrayList<>();
     }
+
 }

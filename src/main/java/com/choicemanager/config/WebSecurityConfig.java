@@ -1,14 +1,9 @@
 package com.choicemanager.config;
 
-import com.choicemanager.domain.Role;
-import com.choicemanager.domain.User;
-import com.choicemanager.repository.UserRepository;
 import com.choicemanager.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,26 +12,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.session.SessionManagementFilter;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
 //@EnableOAuth2Sso
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
+    private final BCryptPasswordEncoder passwordEncoder;
     private final DataSource dataSource;
-
     private final RoleService roleService;
 
     WebSecurityConfig(DataSource dataSource,
-                      RoleService roleService) {
+                      RoleService roleService,
+                      @Lazy BCryptPasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
+
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(8);

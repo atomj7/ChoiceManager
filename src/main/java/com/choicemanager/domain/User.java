@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name="usr")
+@Table(name = "usr")
 @Data
 @ToString
 @EqualsAndHashCode

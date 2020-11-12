@@ -4,7 +4,6 @@ import com.choicemanager.domain.Role;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,23 +28,20 @@ public class UserService implements UserDetailsService {
     private String hostname;
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
-    private  final EntityManager entityManager;
-
+    private final EntityManager entityManager;
     private final RoleService roleService;
-    @Autowired
-    private  MailSender mailSender;
+    private final MailSender mailSender;
 
     UserService(UserRepository userRepository,
                 PasswordEncoder passwordEncoder,
                 EntityManager entityManager,
-                RoleService roleService) {
+                RoleService roleService, MailSender mailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
         this.roleService = roleService;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -74,7 +70,7 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(newUser);
 
-        if(!StringUtils.isEmpty(newUser.getEmail())) {
+        if (!StringUtils.isEmpty(newUser.getEmail())) {
             String message = String.format(
                     "Hello, %s %s! \n" +
                     "Welcome to Choice Manager.\n " +
@@ -107,8 +103,9 @@ public class UserService implements UserDetailsService {
     public boolean isActivated(Long id) {
         return userRepository.findById(id).map(User::isActivated).orElse(false);
     }
+
     public String getActivationCodeById(Long id) {
-        if(userRepository.findById(id).isPresent()){
+        if (userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get().getActivationCode();
         }
         return "User are not present";
@@ -123,9 +120,9 @@ public class UserService implements UserDetailsService {
         if (userData.getPassword() != null &&
                 !userData.getPassword().equals(userData.getPasswordConfirmation())) {
             errorsMap.put("passwordError", "Password are different!");
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorsMap);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorsMap);
         }
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorsMap);
 
         }

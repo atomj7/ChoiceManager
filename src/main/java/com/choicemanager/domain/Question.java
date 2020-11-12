@@ -1,16 +1,16 @@
 package com.choicemanager.domain;
 
-import lombok.Getter;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Data
 @Entity
 @Table(name = "questions")
 public class Question implements Serializable {
 
-    @Getter
     @Id
     private Long id;
 
@@ -19,12 +19,10 @@ public class Question implements Serializable {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @Getter
     @NotNull
     @Column(name = "question")
     private String description;
 
-    @Getter
     @NotNull
     @Column(name = "type")
     private String type;
