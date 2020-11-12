@@ -17,8 +17,6 @@ import java.util.Set;
 @Entity
 @Table(name = "usr")
 @Data
-@ToString
-@EqualsAndHashCode
 public class User implements Serializable, UserDetails {
 
     @Id
