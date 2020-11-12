@@ -1,9 +1,8 @@
-package com.choisemanager.domain;
+package com.choicemanager.domain;
 
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 
 @Entity
     @Table(name= "goals")

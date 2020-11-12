@@ -1,4 +1,4 @@
-package com.choisemanager.controllers;
+package com.choicemanager.controllers;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

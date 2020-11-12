@@ -1,11 +1,9 @@
-package com.choisemanager.service;
+package com.choicemanager.service;
 
-import com.choisemanager.domain.Goal;
-import com.choisemanager.repository.GoalRepository;
+import com.choicemanager.domain.Goal;
+import com.choicemanager.repository.GoalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service

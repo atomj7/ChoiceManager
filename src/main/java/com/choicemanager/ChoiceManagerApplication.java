@@ -1,13 +1,13 @@
-package com.choisemanager;
+package com.choicemanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChoiseManagerApplication {
+public class ChoiceManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChoiseManagerApplication.class, args);
+		SpringApplication.run(ChoiceManagerApplication.class, args);
 	}
 
 }

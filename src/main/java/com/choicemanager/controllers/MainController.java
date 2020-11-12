@@ -1,13 +1,11 @@
-package com.choisemanager.controllers;
+package com.choicemanager.controllers;
 
-import com.choisemanager.domain.Goal;
-import com.choisemanager.repository.GoalRepository;
-import com.choisemanager.service.GoalService;
+import com.choicemanager.domain.Goal;
+import com.choicemanager.repository.GoalRepository;
+import com.choicemanager.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
