@@ -73,9 +73,9 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(newUser.getEmail())) {
             String message = String.format(
                     "Hello, %s %s! \n" +
-                    "Welcome to Choice Manager.\n " +
-                    "Please, visit next link: http://%s:8080/activate/%s to activate your account.\n " +
-                    "Have a nice day!",
+                            "Welcome to Choice Manager.\n " +
+                            "Please, visit next link: http://%s:8080/activate/%s to activate your account.\n " +
+                            "Have a nice day!",
                     newUser.getName(),
                     newUser.getSurname(),
                     hostname,

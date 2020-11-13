@@ -2,7 +2,14 @@ plugins {
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	id 'org.flywaydb.flyway' version '7.2.0'
 }
+
+flyway{
+	locations = ['classpath:db/migration']
+}
+
+flywayMigrate.dependsOn classes
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -27,13 +34,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
+	implementation 'org.flywaydb:flyway-core'
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.1.RELEASE')
-	compile('org.flywaydb:flyway-core')
 	compile('org.springframework.boot:spring-boot-starter-mail')
+	compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.5.0.RELEASE'
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
