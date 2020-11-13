@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -56,7 +57,8 @@ public class User implements Serializable, UserDetails {
 
     private String googleAuthId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     private String activationCode;
