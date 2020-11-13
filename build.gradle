@@ -2,7 +2,6 @@ plugins {
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
-	id "org.flywaydb.flyway" version "7.2.0"
 }
 
 group = 'com.example'
@@ -30,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-test'
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.1.RELEASE')
+	compile('org.flywaydb:flyway-core')
 	compile('org.springframework.boot:spring-boot-starter-mail')
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'

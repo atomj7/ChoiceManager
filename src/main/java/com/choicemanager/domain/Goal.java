@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -26,6 +27,12 @@ public class Goal {
     @NotNull
     private String explanation;
 
+    @ManyToMany(mappedBy = "goals")
+    private Set<User> users;
+
+
+
+
 
     public Goal () {}
 
@@ -41,6 +48,7 @@ public class Goal {
         this.name = getName();
         this.category = getCategory();
         this.explanation = getExplanation();
+        this.users = getUsers();
 
     }
 

@@ -23,7 +23,7 @@ public class GoalController {
         this.goalRepository = goalRepository;
     }
 
-    @PostMapping(value = "/view")
+    @PostMapping(value = "/goal")
     public @ResponseBody
     ResponseEntity<Object> home(@RequestBody @Valid Goal goal, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);

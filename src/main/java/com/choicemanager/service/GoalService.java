@@ -22,6 +22,7 @@ public class GoalService {
         goal.setExplanation(goal.getExplanation());
         goalRepository.save(goal);
         return true;
+
     }
 
     public boolean DeleteGoal(Goal goal)

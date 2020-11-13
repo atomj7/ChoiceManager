@@ -58,6 +58,9 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Goal> goals;
+
     private String activationCode;
 
     private boolean isActivated;
@@ -87,6 +90,7 @@ public class User implements Serializable, UserDetails {
         this.active = user.active;
         this.locale = user.getLocale();
         this.roles = user.getRoles();
+        this.goals = user.getGoals();
         this.googleAuthId = user.getGoogleAuthId();
     }
 
@@ -122,5 +126,8 @@ public class User implements Serializable, UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void setActive(boolean b) {
     }
 }
