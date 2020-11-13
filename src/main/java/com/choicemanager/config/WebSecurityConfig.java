@@ -1,10 +1,12 @@
 package com.choicemanager.config;
 
+import com.choicemanager.service.AuthenticationService;
 import com.choicemanager.service.RoleService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,13 +23,15 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder passwordEncoder;
     private final DataSource dataSource;
     private final RoleService roleService;
+    private final AuthenticationService authenticationService;
 
     WebSecurityConfig(DataSource dataSource,
                       RoleService roleService,
-                      @Lazy BCryptPasswordEncoder passwordEncoder) {
+                      @Lazy BCryptPasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.dataSource = dataSource;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     @Bean
@@ -44,8 +48,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-        .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your custom CorsFilter
-                .exceptionHandling().and()
+                    .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your custom CorsFilter
+                    .exceptionHandling()
+                .and()
                     .authorizeRequests()
                     .antMatchers("/**", "/home", "/registration", "/user").permitAll()
                     .anyRequest().authenticated()
@@ -61,26 +66,37 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(authenticationService);
+    }
+    /*    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        String userByMailQuery = "SELECT email, password, is_active FROM usr WHERE email = ?;";
-        String userByLoginQuery = "SELECT login, password, is_active FROM usr WHERE login=?";
-        String roleByLoginQuery = "select u.login, ur.role from usr u inner join user_role ur on u.id = ur.user_id where u.login=?";
-        String roleByMailQuery = "select u.email, ur.role from usr u inner join user_role ur on u.id = ur.user_id where u.email=?";
-
+        String userByMailQuery = "SELECT email, password, active " +
+                "FROM usr WHERE email = ?";
+        String userByLoginQuery = "SELECT login, password, active " +
+                "FROM usr WHERE login = ?";
+        String roleByLoginQuery = "select u.login, r.name " +
+                "from roles r, usr u, usr_roles " +
+                "where u.login = ? " +
+                "and r.id = usr_roles.users_id";
+        String roleByEmailQuery = "select u.email, r.name " +
+                "from roles r, usr u, usr_roles " +
+                "where u.email = ? " +
+                "and r.id = usr_roles.users_id";
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder)
                 .usersByUsernameQuery(userByMailQuery)
-                .authoritiesByUsernameQuery(roleByMailQuery);
+                .authoritiesByUsernameQuery(roleByLoginQuery);
 
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder)
                 .usersByUsernameQuery(userByLoginQuery)
-                .authoritiesByUsernameQuery(roleByLoginQuery);
+                .authoritiesByUsernameQuery(roleByEmailQuery);
 
-    }
+    }*/
 
    /* PrincipalExtractor principalExtractor(UserRepository userRepository) {
         return map -> {
