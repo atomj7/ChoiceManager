@@ -1,4 +1,5 @@
 package com.choicemanager.security;
+import com.choicemanager.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,11 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserService userService;
 
-    public TokenAuthenticationFilter(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService) {
+    public TokenAuthenticationFilter(TokenProvider tokenProvider, UserService userService) {
         this.tokenProvider = tokenProvider;
-        this.customUserDetailsService = customUserDetailsService;
+        this.userService = userService;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
@@ -35,7 +36,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
 
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UserDetails userDetails = userService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
