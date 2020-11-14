@@ -16,6 +16,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,13 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+
+        return user;
+    }
 
     public boolean addUser(User userData) {
         if (isUserExist(userData)) {
