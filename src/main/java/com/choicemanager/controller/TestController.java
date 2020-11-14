@@ -5,6 +5,10 @@ import com.choicemanager.repository.AnswerRepository;
 import com.choicemanager.repository.CategoryRepository;
 import com.choicemanager.repository.QuestionRepository;
 import com.choicemanager.repository.UserRepository;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +34,13 @@ public class TestController {
         this.userRepository = userRepository;
     }
 
+    @ApiOperation(value = "Get Category or list of Categories with Questions", response = CategoryWrapper.class)
+    @ApiImplicitParams({@ApiImplicitParam(
+            name = "id",
+            value = "ID of a specific category if required",
+            paramType = "query",
+            dataType = "Long"
+    )})
     @GetMapping("/test")
     public ResponseEntity<?> getTest(@RequestParam(required = false) Long id) {
         CategoryWrapper categories = new CategoryWrapper();
@@ -61,10 +72,15 @@ public class TestController {
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
+    @ApiOperation(value = "Put answers to database", response = AnswerWrapper.class)
     @PostMapping("/test")
-    public ResponseEntity<?> save(@RequestBody Iterable<Answer> answerList) {
+    public ResponseEntity<?> save(@RequestBody
+                                  @Parameter(
+                                          name = "answerList",
+                                          description = "Answer list wrapped in \"answers\" object")
+                                          AnswerWrapper answerWrapper) {
         ArrayList<Answer> createdAnswerList = new ArrayList<>();
-        for (Answer answer : answerList) {
+        for (Answer answer : answerWrapper.getAnswers()) {
             Long userId = answer.getUser().getId();
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
