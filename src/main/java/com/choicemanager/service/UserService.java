@@ -18,10 +18,7 @@ import org.springframework.validation.BindingResult;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.nio.file.attribute.UserPrincipal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service("UserService")
 public class UserService implements UserDetailsService {
@@ -86,15 +83,15 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean activateUser(String code) {
-        User user = userRepository.findByActivationCode(code);
+        Optional<User> user = userRepository.findByActivationCode(code);
 
         if (user == null) {
             return false;
         }
 
-        user.setActivated(true);
-        user.setActivationCode("activated");
-        userRepository.save(user);
+        user.get().setActivated(true);
+        user.get().setActivationCode("activated");
+        userRepository.save(user.get());
 
         return true;
     }

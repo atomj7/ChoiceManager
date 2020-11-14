@@ -1,4 +1,4 @@
-package com.choicemanager.security.oauth;
+package com.choicemanager.security.oauth2;
 
 import java.util.Map;
 

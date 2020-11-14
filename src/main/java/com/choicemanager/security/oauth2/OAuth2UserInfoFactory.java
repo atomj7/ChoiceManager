@@ -1,4 +1,4 @@
-package com.choicemanager.security.oauth;
+package com.choicemanager.security.oauth2;
 
 import com.choicemanager.domain.AuthProvider;
 import com.choicemanager.exception.OAuth2AuthenticationProcessingException;

@@ -41,7 +41,7 @@ public class User implements Serializable, UserDetails {
     @NotBlank(message = "Surname can not be empty")
     private String surname;
 
-    private String userPic;
+    private String ImageUrl;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -84,7 +84,7 @@ public class User implements Serializable, UserDetails {
         this.passwordConfirmation = user.getPasswordConfirmation();
         this.name = user.getName();
         this.surname = user.getSurname();
-        this.userPic = user.getUserPic();
+        this.ImageUrl = user.getImageUrl();
         this.gender = user.getGender();
         this.lastVisit = user.getLastVisit();
         this.active = user.active;
