@@ -1,4 +1,4 @@
-package com.choicemanager.requestEntity;
+package com.choicemanager.payload;
 
 import lombok.Getter;
 import lombok.Setter;
