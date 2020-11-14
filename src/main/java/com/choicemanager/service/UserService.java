@@ -46,16 +46,6 @@ public class UserService implements UserDetailsService {
         this.mailSender = mailSender;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByLogin(login);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
-    }
 
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
@@ -158,5 +148,10 @@ public class UserService implements UserDetailsService {
     public List<User> userGetList(Long idMin) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
                 .setParameter("paramId", idMin).getResultList();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }

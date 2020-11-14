@@ -32,7 +32,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     WebSecurityConfig(DataSource dataSource,
                       RoleService roleService,
-                      @Lazy BCryptPasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
+                      @Lazy BCryptPasswordEncoder passwordEncoder,
+                      AuthenticationService authenticationService) {
         this.dataSource = dataSource;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
@@ -46,8 +47,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     CorsFilter corsFilter() {
-        CorsFilter filter = new CorsFilter();
-        return filter;
+        return new CorsFilter();
     }
 
     @Override
@@ -61,6 +61,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
+                    .loginPage("/login")
                     .permitAll()
                 .and()
                     .logout()
@@ -74,21 +75,21 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authenticationService);
     }
-    /*    @Override
+      /*  @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
         String userByMailQuery = "SELECT email, password, active " +
                 "FROM usr WHERE email = ?";
         String userByLoginQuery = "SELECT login, password, active " +
                 "FROM usr WHERE login = ?";
-        String roleByLoginQuery = "select u.login, r.name " +
-                "from roles r, usr u, usr_roles " +
-                "where u.login = ? " +
-                "and r.id = usr_roles.users_id";
-        String roleByEmailQuery = "select u.email, r.name " +
-                "from roles r, usr u, usr_roles " +
-                "where u.email = ? " +
-                "and r.id = usr_roles.users_id";
+        String roleByLoginQuery = "SELECT u.login, ur.name " +
+         "FROM usr u INNER JOIN usr_roles ur "+
+          "ON u.id = ur.users_id"+
+          "WHERE u.login=?";
+        String roleByEmailQuery = "SELECT u.email, ur.name " +
+         "FROM usr u INNER JOIN usr_roles ur " +
+          "ON u.id = ur.users_id " +
+         "WHERE u.email?";
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder)
@@ -101,8 +102,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery(userByLoginQuery)
                 .authoritiesByUsernameQuery(roleByEmailQuery);
 
-    }*/
-
+    }
+*/
    /* PrincipalExtractor principalExtractor(UserRepository userRepository) {
         return map -> {
             User newUser = new User();

@@ -2,18 +2,15 @@ package com.choicemanager.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -55,8 +52,6 @@ public class User implements Serializable, UserDetails {
 
     private String locale;
 
-    private String googleAuthId;
-
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
@@ -64,6 +59,11 @@ public class User implements Serializable, UserDetails {
     private String activationCode;
 
     private boolean isActivated;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 
     public User() {
     }
@@ -90,7 +90,10 @@ public class User implements Serializable, UserDetails {
         this.active = user.active;
         this.locale = user.getLocale();
         this.roles = user.getRoles();
-        this.googleAuthId = user.getGoogleAuthId();
+        this.isActivated = user.isActivated;
+        this.activationCode = user.activationCode;
+        this.provider = user.provider;
+        this.providerId = user.providerId;
     }
 
     @Override
@@ -126,9 +129,4 @@ public class User implements Serializable, UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
-    @Enumerated(EnumType.STRING)
-    private AuthProvider provider;
-
-    private String providerId;
 }
