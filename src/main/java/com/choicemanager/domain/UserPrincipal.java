@@ -1,6 +1,5 @@
-package com.choicemanager.security;
+package com.choicemanager.domain;
 
-import com.choicemanager.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

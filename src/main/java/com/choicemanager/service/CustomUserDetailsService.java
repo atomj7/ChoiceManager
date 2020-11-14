@@ -4,7 +4,7 @@ package com.choicemanager.service;
 import com.choicemanager.domain.User;
 import com.choicemanager.exception.ResourceNotFoundException;
 import com.choicemanager.repository.UserRepository;
-import com.choicemanager.security.UserPrincipal;
+import com.choicemanager.domain.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

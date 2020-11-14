@@ -4,7 +4,7 @@ import com.choicemanager.domain.AuthProvider;
 import com.choicemanager.domain.User;
 import com.choicemanager.exception.OAuth2AuthenticationProcessingException;
 import com.choicemanager.repository.UserRepository;
-import com.choicemanager.security.UserPrincipal;
+import com.choicemanager.domain.UserPrincipal;
 import com.choicemanager.security.oauth2.OAuth2UserInfo;
 import com.choicemanager.security.oauth2.OAuth2UserInfoFactory;
 import io.micrometer.core.instrument.util.StringUtils;

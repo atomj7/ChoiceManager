@@ -134,8 +134,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isUserExist(User user) {
-        return (userRepository.findByEmail(user.getEmail()) != null)
-                || (userRepository.findByLogin(user.getLogin()) != null);
+        return (userRepository.findByEmail(user.getEmail()).isPresent())
+                || (userRepository.findByLogin(user.getLogin()).isPresent());
     }
 
     public Object allUsers() {
