@@ -15,6 +15,8 @@ create table usr
     password        varchar(255),
     surname         varchar(255),
     user_pic        varchar(255),
+    provider        varchar(255),
+    provider_id     varchar(255),
     primary key (id)
 );
 

@@ -9,9 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -55,7 +57,8 @@ public class User implements Serializable, UserDetails {
 
     private String googleAuthId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     private String activationCode;
@@ -123,4 +126,9 @@ public class User implements Serializable, UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 }
