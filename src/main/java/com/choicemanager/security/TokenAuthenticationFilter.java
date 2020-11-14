@@ -1,4 +1,5 @@
 package com.choicemanager.security;
+
 import com.choicemanager.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
