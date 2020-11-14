@@ -17,6 +17,11 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 //@EnableOAuth2Sso
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
