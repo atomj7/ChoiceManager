@@ -5,6 +5,7 @@ import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +20,11 @@ import static org.springframework.http.ResponseEntity.ok;
 public class ProfileController {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ProfileController(UserRepository userRepository) {
+    public ProfileController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -30,6 +33,7 @@ public class ProfileController {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()) {
             User user = userOptional.get();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             return ResponseEntity.ok(user);
         }
         return new ResponseEntity("user not found",HttpStatus.NOT_FOUND);
