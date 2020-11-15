@@ -56,6 +56,10 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Goal> goals;
+
+
     private String activationCode;
 
     private boolean isActivated;
@@ -90,6 +94,7 @@ public class User implements Serializable, UserDetails {
         this.active = user.active;
         this.locale = user.getLocale();
         this.roles = user.getRoles();
+        this.goals = user.getGoals();
         this.isActivated = user.isActivated;
         this.activationCode = user.activationCode;
         this.provider = user.provider;

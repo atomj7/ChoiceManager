@@ -12,6 +12,7 @@ import java.util.Set;
 public class Goal {
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
@@ -32,8 +33,6 @@ public class Goal {
 
 
 
-
-
     public Goal () {}
 
     public Goal(long id, String Name, String category, String explanation){
@@ -50,6 +49,10 @@ public class Goal {
         this.explanation = getExplanation();
         this.users = getUsers();
 
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
 }
