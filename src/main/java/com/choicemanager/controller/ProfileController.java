@@ -33,7 +33,6 @@ public class ProfileController {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             return ResponseEntity.ok(user);
         }
         return new ResponseEntity("user not found",HttpStatus.NOT_FOUND);
@@ -49,6 +48,7 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(errorsMap.toString(), HttpStatus.NOT_ACCEPTABLE);
         }
+        userData.setPassword(passwordEncoder.encode(userData.getPassword()));
         userRepository.save(userData);
         return new ResponseEntity<>(HttpStatus.OK);
     }
