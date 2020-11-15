@@ -1,27 +1,25 @@
 package com.choicemanager.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.Objects;
 import java.util.Set;
 
-@Data
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
 
+    @Getter
     @Id
     private Long id;
 
+    @Getter
     private String name;
 
-    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
