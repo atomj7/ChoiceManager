@@ -83,10 +83,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(8);
     }
 
-    @Bean
-    CorsFilter corsFilter() {
-        return new CorsFilter();
-    }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
