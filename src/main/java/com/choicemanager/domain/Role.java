@@ -1,5 +1,6 @@
 package com.choicemanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,12 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.Objects;
 import java.util.Set;
 
-@Data
 @Entity
 @Table(name = "roles")
+@Data
 public class Role implements GrantedAuthority {
 
     @Id
@@ -21,6 +21,7 @@ public class Role implements GrantedAuthority {
 
     private String name;
 
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;

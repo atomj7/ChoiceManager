@@ -16,10 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import javax.transaction.Transactional;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.*;
 
 @Service("UserService")
 public class UserService implements UserDetailsService {
@@ -44,17 +43,14 @@ public class UserService implements UserDetailsService {
         this.mailSender = mailSender;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByLogin(login);
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
 
         return user;
     }
-
 
     public boolean addUser(User userData) {
         if (isUserExist(userData)) {
@@ -87,15 +83,15 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean activateUser(String code) {
-        User user = userRepository.findByActivationCode(code);
+        Optional<User> user = userRepository.findByActivationCode(code);
 
         if (user == null) {
             return false;
         }
 
-        user.setActivated(true);
-        user.setActivationCode("activated");
-        userRepository.save(user);
+        user.get().setActivated(true);
+        user.get().setActivationCode("activated");
+        userRepository.save(user.get());
 
         return true;
     }
@@ -138,8 +134,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isUserExist(User user) {
-        return (userRepository.findByEmail(user.getEmail()) != null)
-                || (userRepository.findByLogin(user.getLogin()) != null);
+        return (userRepository.findByEmail(user.getEmail()).isPresent())
+                || (userRepository.findByLogin(user.getLogin()).isPresent());
     }
 
     public Object allUsers() {
@@ -149,5 +145,10 @@ public class UserService implements UserDetailsService {
     public List<User> userGetList(Long idMin) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
                 .setParameter("paramId", idMin).getResultList();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
