@@ -49,7 +49,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
 
-    WebSecurityConfig(CustomUserDetailsService customUserDetailsService, CustomOAuth2UserService customOAuth2UserService, DataSource dataSource,
+    WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
+                      CustomOAuth2UserService customOAuth2UserService,
+                      DataSource dataSource,
                       RoleService roleService,
                       @Lazy BCryptPasswordEncoder passwordEncoder,
                       AuthenticationService authenticationService,

@@ -56,6 +56,7 @@ public class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Goal> goals;
 

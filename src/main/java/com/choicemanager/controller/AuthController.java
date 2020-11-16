@@ -2,6 +2,7 @@ package com.choicemanager.controller;
 
 import com.choicemanager.payload.AuthResponse;
 import com.choicemanager.payload.LoginRequest;
+import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.TokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,10 +24,13 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
 
-    AuthController(AuthenticationManager authenticationManager, TokenProvider tokenProvider) {
+    private final UserRepository userRepository;
+
+    AuthController(AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
 
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -40,8 +44,8 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        Long id = (userRepository.findByEmail(loginRequest.getEmail()).get().getId());
         String token = tokenProvider.createToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token, id));
     }
 }

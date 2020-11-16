@@ -61,12 +61,26 @@ create table usr_roles
 
 create table goals
 (
-    id          int8 not null,
+    id          bigint not null
+        constraint goals_pkey
+            primary key,
     category    varchar(255),
     explanation varchar(255),
-    name        varchar(255),
-    primary key (id)
+    name        varchar(255)
 );
+
+create table usr_goals
+(
+    users_id bigint not null
+        constraint fk41ixqoo18h7uyp3gfmgiyxpgw
+            references usr,
+    goals_id bigint not null
+        constraint fk7nxypflwado4ltk7angw0jngk
+            references goals,
+    constraint usr_goals_pkey
+        primary key (users_id, goals_id)
+);
+
 
 alter table if exists usr
     add constraint usr_email_uk unique (email);

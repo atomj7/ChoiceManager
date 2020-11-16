@@ -11,7 +11,12 @@ public class AuthResponse {
     @Setter
     private final String tokenType = "Bearer";
 
-    public AuthResponse(String accessToken) {
+    @Setter
+    @Getter
+    private final Long id;
+
+    public AuthResponse(String accessToken, Long id) {
         this.accessToken = accessToken;
+        this.id = id;
     }
 }
