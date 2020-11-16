@@ -31,6 +31,7 @@ public class GoalService {
 
         if(user.isPresent()) {
             goal.setUsers(Collections.singleton(user.get()));
+            user.get().setGoals(Collections.singleton(goal));
         }
         else return false;
         goalRepository.save(goal);
