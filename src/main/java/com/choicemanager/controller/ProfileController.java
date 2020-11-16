@@ -47,7 +47,7 @@ public class ProfileController {
         return new ResponseEntity("user not found",HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/radar/{id}")
     public ResponseEntity radarChartGet(@PathVariable Long id) {
         RadarChart radarChart = new RadarChart(answerRepository, id);
         if(radarChart.getRadarChart().size() > 0)
