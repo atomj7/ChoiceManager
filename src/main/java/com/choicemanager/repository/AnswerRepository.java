@@ -15,7 +15,7 @@ public interface AnswerRepository extends CrudRepository<Answer, Long> {
 
     ArrayList<Answer> findALlByQuestionId(Long id);
 
-    ArrayList<Answer> findAllByUserId(String id);
+    ArrayList<Answer> findAllByUserId(Long id);
 
     @Override
     <S extends Answer> S save(S entity);

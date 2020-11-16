@@ -1,6 +1,10 @@
 package com.choicemanager.controller;
 
+import com.choicemanager.domain.RadarChart;
+import com.choicemanager.domain.RadarChartElement;
 import com.choicemanager.domain.User;
+import com.choicemanager.domain.UserRadarChartDTO;
+import com.choicemanager.repository.AnswerRepository;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,10 +26,14 @@ public class ProfileController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AnswerRepository answerRepository;
 
-    public ProfileController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public ProfileController(UserRepository userRepository,
+                             PasswordEncoder passwordEncoder,
+                             AnswerRepository answerRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.answerRepository = answerRepository;
     }
 
 
@@ -36,6 +45,14 @@ public class ProfileController {
             return ResponseEntity.ok(user);
         }
         return new ResponseEntity("user not found",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/radar/{id}")
+    public ResponseEntity radarChartGet(@PathVariable Long id) {
+        RadarChart radarChart = new RadarChart(answerRepository, id);
+        if(radarChart.getRadarChart().size() > 0)
+            return ResponseEntity.ok(radarChart);
+        return new ResponseEntity("Radar chart is empty",HttpStatus.NOT_FOUND);
     }
 
     @PutMapping
