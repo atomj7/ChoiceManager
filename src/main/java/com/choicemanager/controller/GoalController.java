@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class GoalController {
@@ -31,10 +33,10 @@ public class GoalController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping(value = "/goal")
+    @PostMapping(value = "/goals/create")
     public @ResponseBody
-    @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> home(@CurrentUser @RequestBody @Valid UserPrincipal userPrincipal, Goal goal,User user, BindingResult bindingResult) {
+  //  @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Object> addGoal( @RequestBody @Valid  Goal goal,User user, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (goal == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -45,13 +47,14 @@ public class GoalController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(errorsMap);
         }
-        if (!goalService.AddGoal(goal,userRepository.findById(userPrincipal.getId()))){
+        if (!goalService.AddGoal(goal,userRepository.findById(3L))){
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
                     Map.of("message", "goal already exist"));
         }
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
                 Map.of("message", "goal created"));
     }
+
 
 }
 
