@@ -78,9 +78,9 @@ public class TestController {
                                   @Parameter(
                                           name = "answerList",
                                           description = "Answer list wrapped in \"answers\" object")
-                                          Iterable<Answer> answerList) {
+                                          AnswerWrapper answerWrapper) {
         ArrayList<Answer> createdAnswerList = new ArrayList<>();
-        for (Answer answer : answerList) {
+        for (Answer answer : answerWrapper.getAnswers()) {
             Long userId = answer.getUser().getId();
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
