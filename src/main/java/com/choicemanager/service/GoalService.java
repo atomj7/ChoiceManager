@@ -6,11 +6,10 @@ import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
 import com.choicemanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -30,8 +29,13 @@ public class GoalService {
        }
 
         if(user.isPresent()) {
-            goal.setUsers(Collections.singleton(user.get()));
-            user.get().setGoals(Collections.singleton(goal));
+            for (Goal newGoal : Collections.singleton(goal))
+            {
+                user.get().getGoals().add(newGoal);
+            }
+
+            goal.setUsers(goal.getUsers());
+            user.get().setGoals(user.get().getGoals());
         }
         else return false;
         goalRepository.save(goal);
@@ -45,8 +49,17 @@ public class GoalService {
         return true;
     }
 
-    public Iterable<Goal> GetGoals() {
-        return goalRepository.findAll();
+    public ArrayList<Goal> GetGoals(Optional<User> userOptional) {
+        User user = new User();
+        user = userOptional.get();
+        Set<Goal> goals = user.getGoals();
+        ArrayList<Goal> goalList = new ArrayList<Goal>();
+        for(Goal goal1 : goals){
+            goal1.setUsers(null);
+            goalList.add(goal1);
+        }
+
+        return goalList;
     }
 
 }

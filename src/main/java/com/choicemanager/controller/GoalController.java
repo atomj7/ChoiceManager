@@ -2,21 +2,18 @@ package com.choicemanager.controller;
 
 import com.choicemanager.domain.Goal;
 import com.choicemanager.domain.User;
-import com.choicemanager.domain.UserPrincipal;
-import com.choicemanager.exception.ResourceNotFoundException;
 import com.choicemanager.repository.GoalRepository;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.GoalService;
 import com.choicemanager.utils.ErrorUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +33,7 @@ public class GoalController {
     @PostMapping(value = "/goals/create")
     public @ResponseBody
   //  @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> addGoal( @RequestBody @Valid  Goal goal,User user, BindingResult bindingResult) {
+    ResponseEntity<Object> addGoal(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (goal == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -53,6 +50,18 @@ public class GoalController {
         }
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
                 Map.of("message", "goal created"));
+    }
+
+    @GetMapping("/goals")
+    public @ResponseBody
+    ResponseEntity<Object> goals(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+        Optional<User> userOptional = userRepository.findById(3L);
+        if(userOptional.isPresent()) {
+            goalService.GetGoals(userOptional);
+            return ResponseEntity.ok(goalService.GetGoals(userOptional));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("goal not found");
     }
 
 
