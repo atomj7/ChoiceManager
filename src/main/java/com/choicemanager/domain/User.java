@@ -1,5 +1,6 @@
 package com.choicemanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -59,7 +60,6 @@ public class User implements Serializable, UserDetails {
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Goal> goals;
-
 
     private String activationCode;
 

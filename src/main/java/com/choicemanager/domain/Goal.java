@@ -1,5 +1,6 @@
 package com.choicemanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -28,11 +29,9 @@ public class Goal {
     @NotNull
     private String explanation;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "goals")
     private Set<User> users;
-
-
-
     public Goal () {}
 
     public Goal(long id, String Name, String category, String explanation){

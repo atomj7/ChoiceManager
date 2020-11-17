@@ -9,6 +9,7 @@ import com.choicemanager.service.GoalService;
 import com.choicemanager.utils.ErrorUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,8 @@ public class GoalController {
 
     @PostMapping(value = "/goals/create")
     public @ResponseBody
-  //  @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> addGoal(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Object> addGoal(@CurrentUser @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (goal == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -44,7 +45,7 @@ public class GoalController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(errorsMap);
         }
-        if (!goalService.AddGoal(goal,userRepository.findById(3L))){
+        if (!goalService.AddGoal(goal,userRepository.findById(userPrincipal.getId()))){
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
                     Map.of("message", "goal already exist"));
         }
@@ -54,8 +55,8 @@ public class GoalController {
 
     @GetMapping("/goals")
     public @ResponseBody
-    ResponseEntity<Object> goals(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
-        Optional<User> userOptional = userRepository.findById(3L);
+    ResponseEntity<Object> goals(@CurrentUser @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+        Optional<User> userOptional = userRepository.findById(userPrincipal.getId());
         if(userOptional.isPresent()) {
             goalService.GetGoals(userOptional);
             return ResponseEntity.ok(goalService.GetGoals(userOptional));
