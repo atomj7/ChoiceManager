@@ -19,7 +19,7 @@ public class GoalService {
     }
 
     public boolean AddGoal(Goal goal, Optional<User> user) {
-        if(goalRepository.findByName(goal.getName()) != null) {
+        if(goalRepository.findById(goal.getId()).isPresent()) {
            return false;
        }
         if(user.isPresent()) {
@@ -41,9 +41,9 @@ public class GoalService {
     }
 
     public ArrayList<Goal> GetGoals(Optional<User> userOptional) {
-        User user = userOptional.get();
-        Set<Goal> goals = user.getGoals();
-        return new ArrayList<Goal>(goals);
+            User user = userOptional.get();
+            Set<Goal> goals = user.getGoals();
+            return new ArrayList<Goal>(goals);
     }
 
 }
