@@ -33,8 +33,8 @@ public class GoalController {
 
     @PostMapping(value = "/goals/create")
     public @ResponseBody
-    //@PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> addGoal(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Object> addGoal(@CurrentUser @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (goal == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -45,7 +45,7 @@ public class GoalController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(errorsMap);
         }
-        if (!goalService.AddGoal(goal,userRepository.findById(6L))){
+        if (!goalService.AddGoal(goal,userRepository.findById(userPrincipal.getId()))){
             return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
                     Map.of("message", "goal already exist"));
         }
@@ -55,8 +55,9 @@ public class GoalController {
 
     @GetMapping("/goals")
     public @ResponseBody
-    ResponseEntity<Object> goals(/*@CurrentUser*/ @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
-        Optional<User> userOptional = userRepository.findById(6L);
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Object> goals(@CurrentUser @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+        Optional<User> userOptional = userRepository.findById(userPrincipal.getId());
         if(userOptional.isPresent()) {
             return ResponseEntity.ok(goalService.GetGoals(userOptional));
         }
