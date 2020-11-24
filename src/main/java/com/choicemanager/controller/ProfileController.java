@@ -3,7 +3,6 @@ package com.choicemanager.controller;
 import com.choicemanager.domain.RadarChart;
 import com.choicemanager.domain.User;
 import com.choicemanager.domain.UserRadarChartDTO;
-import com.choicemanager.repository.AnswerRepository;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.service.RadarChartService;
 import com.choicemanager.utils.ErrorUtils;
@@ -30,7 +29,6 @@ public class ProfileController {
                              RadarChartService radarChartService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
         this.radarChartService = radarChartService;
     }
 
