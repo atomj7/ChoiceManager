@@ -5,9 +5,7 @@ import com.choicemanager.domain.RadarChartElement;
 import com.choicemanager.repository.AnswerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service("RadarChartService")
 public class RadarChartService {
@@ -21,7 +19,13 @@ public class RadarChartService {
     public List<RadarChartElement> getRadarChart(Long id) {
         List<RadarChartElement> radarChart = new ArrayList<>();
         HashMap<String, List<Double>> categoryValueMap = new HashMap<>();
-        List<Answer> answerList = answerRepository.findAllByUserId(id);
+        ArrayList<Answer> answerListTemp = answerRepository.findAllByUserId(id);
+
+        //to get the last answer to the same question
+        Collections.reverse(answerListTemp);
+        Collection<Answer> answerList =
+                new TreeSet<>(Comparator.comparing(Answer::getQuestionId));
+        answerList.addAll(answerListTemp);
 
         for (Answer answer : answerList) {
             if (answer.getQuestion().getType().equals("scale")) {
