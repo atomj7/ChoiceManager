@@ -29,13 +29,13 @@ public class RegistrationController {
 
     @PostMapping(value = "/registration")
     public ResponseEntity<?> userRegistration(@RequestBody @Valid User userData,
-                                                   BindingResult bindingResult) {
+                                              BindingResult bindingResult) {
         if (userService.errorValidationProcessing(bindingResult, userData) != null) {
             return userService.errorValidationProcessing(bindingResult, userData);
         }
         if (!userService.addUser(userData)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                    Map.of("message",  "Already exist"));
+                    Map.of("message", "Already exist"));
         }
 
         return new ResponseEntity<>(HttpStatus.CREATED);

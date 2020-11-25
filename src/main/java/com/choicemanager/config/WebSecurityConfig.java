@@ -32,13 +32,8 @@ import javax.sql.DataSource;
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final DataSource dataSource;
-    private final RoleService roleService;
-    private final AuthenticationService authenticationService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final TokenProvider tokenProvider;
 
     private static final String[] AUTH_WHITELIST = {
@@ -49,25 +44,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
 
-    WebSecurityConfig(UserService userService,
-                      CustomOAuth2UserService customOAuth2UserService,
-                      DataSource dataSource,
-                      RoleService roleService,
-                      @Lazy BCryptPasswordEncoder passwordEncoder,
-                      AuthenticationService authenticationService,
+    WebSecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService,
                       OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
                       OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
-                      HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
                       TokenProvider tokenProvider) {
         this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
-        this.dataSource = dataSource;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationService = authenticationService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
         this.tokenProvider = tokenProvider;
     }
     @Bean
@@ -156,57 +140,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(AUTH_WHITELIST);
     }
-
-      /*  @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        String userByMailQuery = "SELECT email, password, active " +
-                "FROM usr WHERE email = ?";
-        String userByLoginQuery = "SELECT login, password, active " +
-                "FROM usr WHERE login = ?";
-        String roleByLoginQuery = "SELECT u.login, ur.name " +
-         "FROM usr u INNER JOIN usr_roles ur "+
-          "ON u.id = ur.users_id"+
-          "WHERE u.login=?";
-        String roleByEmailQuery = "SELECT u.email, ur.name " +
-         "FROM usr u INNER JOIN usr_roles ur " +
-          "ON u.id = ur.users_id " +
-         "WHERE u.email?";
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(passwordEncoder)
-                .usersByUsernameQuery(userByMailQuery)
-                .authoritiesByUsernameQuery(roleByLoginQuery);
-
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(passwordEncoder)
-                .usersByUsernameQuery(userByLoginQuery)
-                .authoritiesByUsernameQuery(roleByEmailQuery);
-
-    }
-*/
-   /* PrincipalExtractor principalExtractor(UserRepository userRepository) {
-        return map -> {
-            User newUser = new User();
-            String email = (String) map.get("email");
-            try {
-                newUser = userRepository.findByEmail(email);
-            } catch (NullPointerException e) {
-                newUser.setGoogleAuthId((String) map.get("sdf"));
-                newUser.setName((String) map.get("given_name"));
-                newUser.setSurname((String) map.get("family_name"));
-                newUser.setEmail((String) map.get("email"));
-                newUser.setUserPic((String) map.get("picture"));
-                newUser.setLocale((String) map.get("locale"));
-                newUser.setRoles(roleService.addRole(
-                        Collections.singleton(new Role(1L, "ROLE_USER"))));
-            }
-           newUser.setLastVisit(LocalDateTime.now());
-
-            return userRepository.save(newUser);
-        };
-    }*/
 
 }
 

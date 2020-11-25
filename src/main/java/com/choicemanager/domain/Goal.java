@@ -17,15 +17,12 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name="name")
     @NotNull
     private String name;
 
-    @Column(name="category")
     @NotNull
     private String category;
 
-    @Column(name="explanation")
     @NotNull
     private String explanation;
 

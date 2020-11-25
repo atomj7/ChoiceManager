@@ -7,12 +7,11 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@Entity
 @Data
 public class UserDto {
     @Id
     private Long id;
-    private String login;
+    private String username;
     @NotBlank(message = "Email can not be empty")
     @Email(message = "Please provide a valid email id")
     private String email;
@@ -21,7 +20,6 @@ public class UserDto {
     @NotBlank(message = "Surname can not be empty")
     private String surname;
     private String imageUrl;
-    private boolean active;
 
     public UserDto() {
     }
