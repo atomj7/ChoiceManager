@@ -2,8 +2,11 @@ package com.choicemanager.service;
 
 import com.choicemanager.domain.Role;
 import com.choicemanager.domain.User;
+import com.choicemanager.domain.UserDto;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +47,41 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserDetails loadUserById(Long id) {
+    public User getUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
-
         return user;
+    }
+
+    public UserDto convertToDto(User user) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(user,UserDto.class);
+    }
+    public UserDto getUserAsDto(Long id) {
+        try {
+            return convertToDto(getUser(id));
+        }
+        catch(UsernameNotFoundException e){
+            throw e;
+        }
+    }
+
+    public User convertToEntity(UserDto userDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        User user = getUser(userDto.getId());
+        modelMapper.map(userDto,user);
+        return user;
+    }
+
+    public boolean saveUser(UserDto userDto) {
+        userRepository.save(convertToEntity(userDto));
+        return true;
+    }
+
+    public boolean saveUser(User user) {
+        userRepository.save(user);
+        return true;
     }
 
     public boolean addUser(User userData) {
