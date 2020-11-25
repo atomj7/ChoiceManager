@@ -34,18 +34,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getUsernameOrEmail(),
                         loginRequest.getPassword()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Long id = (userRepository.findByEmail(loginRequest.getEmail()).get().getId());
         String token = tokenProvider.createToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(token, id));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

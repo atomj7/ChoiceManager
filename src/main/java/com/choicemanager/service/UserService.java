@@ -2,9 +2,12 @@ package com.choicemanager.service;
 
 import com.choicemanager.domain.Role;
 import com.choicemanager.domain.User;
+import com.choicemanager.domain.UserPrincipal;
+import com.choicemanager.exception.ResourceNotFoundException;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +34,7 @@ public class UserService implements UserDetailsService {
     private final MailSender mailSender;
 
     UserService(UserRepository userRepository,
-                PasswordEncoder passwordEncoder,
+                @Lazy PasswordEncoder passwordEncoder,
                 EntityManager entityManager,
                 RoleService roleService, MailSender mailSender) {
         this.userRepository = userRepository;
@@ -133,13 +136,21 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         if (userRepository.findByUsername(usernameOrEmail).isPresent()) {
 
-            return userRepository.findByUsername(usernameOrEmail).get();
+            return UserPrincipal.create(userRepository.findByUsername(usernameOrEmail).get());
         } else if (userRepository.findByEmail(usernameOrEmail).isPresent()) {
 
-            return userRepository.findByEmail(usernameOrEmail).get();
+            return UserPrincipal.create(userRepository.findByEmail(usernameOrEmail).get());
         } else {
 
             throw new UsernameNotFoundException("User not found");
         }
+    }
+
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id)
+        );
+
+        return UserPrincipal.create(user);
     }
 }

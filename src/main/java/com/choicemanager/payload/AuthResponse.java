@@ -7,16 +7,11 @@ public class AuthResponse {
     @Getter
     @Setter
     private String accessToken;
-    @Getter
-    @Setter
-    private String tokenType = "Bearer";
 
-    @Setter
     @Getter
-    private Long id;
+    private final String tokenType = "Bearer";
 
-    public AuthResponse(String accessToken, Long id) {
+    public AuthResponse(String accessToken) {
         this.accessToken = accessToken;
-        this.id = id;
     }
 }

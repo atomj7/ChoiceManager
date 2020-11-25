@@ -48,7 +48,7 @@ public class User implements Serializable, UserDetails {
     private Gender gender;
 
     private LocalDateTime lastVisit;
-    @Transient
+
     private boolean active;
 
     private String locale;
@@ -108,7 +108,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     @Override
@@ -130,7 +130,6 @@ public class User implements Serializable, UserDetails {
     public boolean isEnabled() {
         return isActive();
     }
-
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
