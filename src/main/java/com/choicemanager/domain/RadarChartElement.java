@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class RadarChartElement {
+
     String categoryName;
     Double averageValue;
 
@@ -11,4 +12,5 @@ public class RadarChartElement {
         this.categoryName = categoryName;
         this.averageValue = averageValue;
     }
+
 }

@@ -1,8 +1,6 @@
 package com.choicemanager.domain;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -30,5 +28,9 @@ public class Answer implements Serializable {
     @NotNull
     @Column(name = "value")
     private String value;
+
+    public Long getQuestionId() {
+        return question.getId();
+    }
 
 }
