@@ -10,6 +10,7 @@ public class RadarChart {
     @Getter
     private final List<RadarChartElement> radarChart;
 
+
     public RadarChart(Long id, RadarChartService radarChartService) {
         radarChart = radarChartService.getRadarChart(id);
     }

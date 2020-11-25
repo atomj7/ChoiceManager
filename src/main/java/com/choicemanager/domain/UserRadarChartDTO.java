@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class UserRadarChartDTO {
 
-    private User user;
+    private UserDto userDto;
     private RadarChart radarChart;
 
-    public UserRadarChartDTO(User user, RadarChart radarChart) {
+    public UserRadarChartDTO(UserDto userDto, RadarChart radarChart) {
         super();
-        this.user = user;
+        this.userDto = userDto;
         this.radarChart = radarChart;
     }
 
