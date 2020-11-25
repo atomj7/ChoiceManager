@@ -1,5 +1,6 @@
 package com.choicemanager.config;
 
+import com.choicemanager.domain.User;
 import com.choicemanager.security.*;
 import com.choicemanager.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.choicemanager.service.*;
@@ -29,8 +30,7 @@ import javax.sql.DataSource;
 )
 //@EnableOAuth2Sso
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserService userService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final DataSource dataSource;
@@ -49,7 +49,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
 
-    WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
+    WebSecurityConfig(UserService userService,
                       CustomOAuth2UserService customOAuth2UserService,
                       DataSource dataSource,
                       RoleService roleService,
@@ -59,7 +59,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                       OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
                       TokenProvider tokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+        this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
         this.dataSource = dataSource;
         this.roleService = roleService;
@@ -72,7 +72,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider, customUserDetailsService);
+        return new TokenAuthenticationFilter(tokenProvider, userService);
     }
 
     @Bean
@@ -90,7 +90,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(userService)
                 .passwordEncoder(getPasswordEncoder());
     }
 
