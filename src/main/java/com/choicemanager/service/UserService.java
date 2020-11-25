@@ -16,8 +16,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.*;
 
 @Service("UserService")
@@ -41,15 +39,6 @@ public class UserService implements UserDetailsService {
         this.entityManager = entityManager;
         this.roleService = roleService;
         this.mailSender = mailSender;
-    }
-
-
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
-        );
-
-        return user;
     }
 
     public boolean addUser(User userData) {
@@ -85,11 +74,11 @@ public class UserService implements UserDetailsService {
     public boolean activateUser(String code) {
         Optional<User> user = userRepository.findByActivationCode(code);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             return false;
         }
 
-        user.get().setActivated(true);
+        user.get().setEmailConfirmed(true);
         user.get().setActivationCode("activated");
         userRepository.save(user.get());
 
@@ -97,7 +86,7 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isActivated(Long id) {
-        return userRepository.findById(id).map(User::isActivated).orElse(false);
+        return userRepository.findById(id).map(User::isEmailConfirmed).orElse(false);
     }
 
     public String getActivationCodeById(Long id) {
@@ -125,17 +114,10 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
-    }
 
     public boolean isUserExist(User user) {
         return (userRepository.findByEmail(user.getEmail()).isPresent())
-                || (userRepository.findByLogin(user.getLogin()).isPresent());
+                || (userRepository.findByUsername(user.getUsername()).isPresent());
     }
 
     public Object allUsers() {
@@ -148,7 +130,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        if (userRepository.findByUsername(usernameOrEmail).isPresent()) {
+
+            return userRepository.findByUsername(usernameOrEmail).get();
+        } else if (userRepository.findByEmail(usernameOrEmail).isPresent()) {
+
+            return userRepository.findByEmail(usernameOrEmail).get();
+        } else {
+
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 }

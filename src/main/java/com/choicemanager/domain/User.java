@@ -24,7 +24,7 @@ public class User implements Serializable, UserDetails {
     private Long id;
 
     @Column(unique = true)
-    private String login;
+    private String username;
 
     @Column(unique = true)
     @NotBlank(message = "Email can not be empty")
@@ -48,7 +48,7 @@ public class User implements Serializable, UserDetails {
     private Gender gender;
 
     private LocalDateTime lastVisit;
-
+    @Transient
     private boolean active;
 
     private String locale;
@@ -63,7 +63,7 @@ public class User implements Serializable, UserDetails {
 
     private String activationCode;
 
-    private boolean isActivated;
+    private boolean emailConfirmed;
 
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
@@ -73,8 +73,8 @@ public class User implements Serializable, UserDetails {
     public User() {
     }
 
-    public User(String login, String email, String password, String name, String surname) {
-        this.login = login;
+    public User(String username, String email, String password, String name, String surname) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.name = name;
@@ -83,7 +83,7 @@ public class User implements Serializable, UserDetails {
 
     public User(User user) {
         this.id = user.getId();
-        this.login = user.getLogin();
+        this.username= user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.passwordConfirmation = user.getPasswordConfirmation();
@@ -92,11 +92,10 @@ public class User implements Serializable, UserDetails {
         this.imageUrl = user.getImageUrl();
         this.gender = user.getGender();
         this.lastVisit = user.getLastVisit();
-        this.active = user.active;
         this.locale = user.getLocale();
         this.roles = user.getRoles();
         this.goals = user.getGoals();
-        this.isActivated = user.isActivated;
+        this.emailConfirmed = user.isEmailConfirmed();
         this.activationCode = user.activationCode;
         this.provider = user.provider;
         this.providerId = user.providerId;
@@ -109,7 +108,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override
@@ -131,6 +130,7 @@ public class User implements Serializable, UserDetails {
     public boolean isEnabled() {
         return isActive();
     }
+
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
