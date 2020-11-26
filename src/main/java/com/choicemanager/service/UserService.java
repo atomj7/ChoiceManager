@@ -24,7 +24,7 @@ import javax.persistence.EntityManager;
 import java.util.*;
 
 @Service("UserService")
-public class UserService implements UserDetailsService {
+public class UserService{
 
     @Value("${hostname}")
     private String hostname;
@@ -171,19 +171,7 @@ public class UserService implements UserDetailsService {
                 .setParameter("paramId", idMin).getResultList();
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        if (userRepository.findByUsername(usernameOrEmail).isPresent()) {
 
-            return UserPrincipal.create(userRepository.findByUsername(usernameOrEmail).get());
-        } else if (userRepository.findByEmail(usernameOrEmail).isPresent()) {
-
-            return UserPrincipal.create(userRepository.findByEmail(usernameOrEmail).get());
-        } else {
-
-            throw new UsernameNotFoundException("User not found");
-        }
-    }
 
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
