@@ -2,6 +2,7 @@ package com.choicemanager.controller;
 
 import com.choicemanager.domain.Goal;
 import com.choicemanager.domain.User;
+import com.choicemanager.domain.UserPrincipal;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.GoalService;
@@ -29,7 +30,7 @@ public class GoalController {
     @PostMapping(value = "/goals/create")
     public @ResponseBody
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> addGoal(@CurrentUser @RequestBody @Valid Goal goal, User userPrincipal, BindingResult bindingResult) {
+    ResponseEntity<Object> addGoal(@RequestBody @Valid Goal goal,@CurrentUser UserPrincipal userPrincipal, BindingResult bindingResult) {
         Map<String, String> errorsMap = ErrorUtils.getErrors(bindingResult);
         if (goal == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -51,7 +52,7 @@ public class GoalController {
     @GetMapping("/goals")
     public @ResponseBody
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> goals(User userPrincipal) {
+    ResponseEntity<Object> goals(@CurrentUser UserPrincipal userPrincipal) {
         Optional<User> userOptional = userRepository.findById(userPrincipal.getId());
         if (userOptional.isPresent()) {
             return ResponseEntity.ok(goalService.GetGoals(userOptional));
