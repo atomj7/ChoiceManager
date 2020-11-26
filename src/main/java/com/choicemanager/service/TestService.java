@@ -54,9 +54,8 @@ public class TestService {
         return categories;
     }
 
-    public void saveAnswers(CustomErrorResponse errors, AnswerWrapper answerWrapper, ArrayList<Answer> createdAnswerList) {
+    public void saveAnswers(CustomErrorResponse errors, Long userId, AnswerWrapper answerWrapper, ArrayList<Answer> createdAnswerList) {
         for (Answer answer : answerWrapper.getAnswers()) {
-            Long userId = answer.getUser().getId();
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
             Optional<Question> questionOptional = questionRepository.findById(questionId);
