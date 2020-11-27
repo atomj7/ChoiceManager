@@ -29,9 +29,17 @@ public class Goal {
     @NotNull
     private String explanation;
 
+    @Column(name="isDone")
+    @NotNull
+    private boolean isDone;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "goals")
     private Set<User> users;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private Set<Task> tasks;
+
     public Goal () {}
 
     public Goal(long id, String Name, String category, String explanation){
@@ -42,11 +50,13 @@ public class Goal {
     }
 
     public Goal(Goal goal){
-        this.id = getId();
-        this.name = getName();
-        this.category = getCategory();
-        this.explanation = getExplanation();
+        this.id = goal.getId();
+        this.name = goal.getName();
+        this.category = goal.getCategory();
+        this.explanation = goal.getExplanation();
+        this.isDone = goal.isDone();
         this.users = getUsers();
+        this.tasks = goal.getTasks();
 
     }
 

@@ -3,6 +3,7 @@ package com.choicemanager.controller;
 import com.choicemanager.domain.Goal;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
+import com.choicemanager.repository.TaskRepository;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.GoalService;
@@ -56,7 +57,7 @@ public class GoalController {
     @GetMapping("/goals")
     public @ResponseBody
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<Object> goals(@CurrentUser @RequestBody @Valid Goal goal, User user ,User userPrincipal, BindingResult bindingResult) {
+    ResponseEntity<Object> goals(@CurrentUser @RequestBody @Valid User userPrincipal, BindingResult bindingResult) {
         Optional<User> userOptional = userRepository.findById(userPrincipal.getId());
         if(userOptional.isPresent()) {
             return ResponseEntity.ok(goalService.GetGoals(userOptional));
@@ -64,5 +65,17 @@ public class GoalController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("user not found");
         }
+
+    @PutMapping("/goals")
+    public @ResponseBody @PreAuthorize("hasRole('USER')")
+    ResponseEntity<Object> editGoal(@CurrentUser @RequestBody @Valid Goal goal, User userPrincipal, BindingResult bindingResult) {
+        Optional<User> userOptional = userRepository.findById(userPrincipal.getId());
+        if(userOptional.isPresent()) {
+            return ResponseEntity.ok(goalService.EditGoal(goal));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("user not found");
     }
+}
+
 

@@ -66,7 +66,17 @@ create table goals
             primary key,
     category    varchar(255),
     explanation varchar(255),
-    name        varchar(255)
+    name        varchar(255),
+    is_done boolean
+);
+
+create table tasks
+(
+    id          bigint not null
+        constraint tasks_pkey
+            primary key,
+    name    varchar(255),
+    is_done boolean
 );
 
 create table usr_goals
@@ -79,6 +89,13 @@ create table usr_goals
             references goals,
     constraint usr_goals_pkey
         primary key (users_id, goals_id)
+);
+
+create table goals_tasks
+(
+    goal_id int8 not null,
+    tasks_id int8 not null,
+    primary key (goal_id, tasks_id)
 );
 
 

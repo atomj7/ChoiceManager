@@ -1,10 +1,13 @@
 package com.choicemanager.service;
 
 import com.choicemanager.domain.Goal;
+import com.choicemanager.domain.Task;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
+import com.choicemanager.repository.TaskRepository;
 import com.choicemanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -12,12 +15,16 @@ import java.util.*;
 public class GoalService {
 
     private final GoalRepository goalRepository;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private  final TaskRepository taskRepository;
 
-    public GoalService(GoalRepository goalRepository) {
+    public GoalService(GoalRepository goalRepository, UserRepository userRepository, TaskRepository taskRepository) {
         this.goalRepository = goalRepository;
+        this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
     }
 
+    @Transactional
     public boolean AddGoal(Goal goal, Optional<User> user) {
         if(goalRepository.findById(goal.getId()).isPresent()) {
            return false;
@@ -28,10 +35,23 @@ public class GoalService {
                 user.get().getGoals().add(newGoal);
             }
             goal.setUsers(goal.getUsers());
-            user.get().setGoals(user.get().getGoals());
+
+           /* for (Task newTask : goal.getTasks())
+            {
+                goal.getTasks().add(newTask);
+            }
+            goal.setTasks(goal.getTasks());*/
+
         }
         else return false;
         goalRepository.save(goal);
+        return true;
+    }
+
+    public boolean EditGoal(Goal goal){
+
+        goalRepository.save(goal);
+
         return true;
     }
 
@@ -40,6 +60,7 @@ public class GoalService {
         return true;
     }
 
+    @Transactional
     public ArrayList<Goal> GetGoals(Optional<User> userOptional) {
             User user = userOptional.get();
             Set<Goal> goals = user.getGoals();
