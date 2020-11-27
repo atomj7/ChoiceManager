@@ -138,6 +138,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public User getCurrentUser(UserPrincipal userPrincipal) {
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        return user;
+    }
+
     public UserDto convertToDto(User user) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user,UserDto.class);
