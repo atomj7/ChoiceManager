@@ -24,11 +24,11 @@ public class AuthenticationService implements org.springframework.security.core.
 
         try {
             Optional <User> client = Optional.of(new User());
-            if(users.findByLogin(username).isEmpty() && users.findByEmail(username).isPresent()) {
+            if(users.findByUsername(username).isEmpty() && users.findByEmail(username).isPresent()) {
                 client = users.findByEmail(username);
             }
-            if(users.findByLogin(username).isPresent() && users.findByEmail(username).isEmpty()) {
-                client = users.findByLogin(username);
+            if(users.findByUsername(username).isPresent() && users.findByEmail(username).isEmpty()) {
+                client = users.findByUsername(username);
             }
             loadedUser = new org.springframework.security.core.userdetails.User(
                     client.get().getUsername(), client.get().getPassword(),

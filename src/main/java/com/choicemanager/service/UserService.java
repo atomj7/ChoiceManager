@@ -2,9 +2,14 @@ package com.choicemanager.service;
 
 import com.choicemanager.domain.Role;
 import com.choicemanager.domain.User;
+import com.choicemanager.domain.UserDto;
+import com.choicemanager.domain.UserPrincipal;
+import com.choicemanager.exception.ResourceNotFoundException;
 import com.choicemanager.repository.UserRepository;
 import com.choicemanager.utils.ErrorUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +21,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.*;
 
 @Service("UserService")
@@ -33,7 +36,7 @@ public class UserService implements UserDetailsService {
     private final MailSender mailSender;
 
     UserService(UserRepository userRepository,
-                PasswordEncoder passwordEncoder,
+                @Lazy PasswordEncoder passwordEncoder,
                 EntityManager entityManager,
                 RoleService roleService, MailSender mailSender) {
         this.userRepository = userRepository;
@@ -41,15 +44,6 @@ public class UserService implements UserDetailsService {
         this.entityManager = entityManager;
         this.roleService = roleService;
         this.mailSender = mailSender;
-    }
-
-
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
-        );
-
-        return user;
     }
 
     public boolean addUser(User userData) {
@@ -85,11 +79,11 @@ public class UserService implements UserDetailsService {
     public boolean activateUser(String code) {
         Optional<User> user = userRepository.findByActivationCode(code);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             return false;
         }
 
-        user.get().setActivated(true);
+        user.get().setEmailConfirmed(true);
         user.get().setActivationCode("activated");
         userRepository.save(user.get());
 
@@ -97,7 +91,7 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isActivated(Long id) {
-        return userRepository.findById(id).map(User::isActivated).orElse(false);
+        return userRepository.findById(id).map(User::isEmailConfirmed).orElse(false);
     }
 
     public String getActivationCodeById(Long id) {
@@ -125,17 +119,53 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
+    public boolean saveUser(User user) {
+        userRepository.save(user);
+        return true;
+    }
+
+    public User convertToEntity(UserDto userDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        User user = getUser(userDto.getId());
+        modelMapper.map(userDto,user);
+        return user;
+    }
+
+    public User getUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+        return user;
+    }
+
+    public User getCurrentUser(UserPrincipal userPrincipal) {
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        return user;
+    }
+
+    public UserDto convertToDto(User user) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(user,UserDto.class);
+    }
+    public UserDto getUserAsDto(Long id) {
+        try {
+            return convertToDto(getUser(id));
         }
-        return false;
+        catch(UsernameNotFoundException e){
+            throw e;
+        }
+    }
+
+
+    public boolean saveUser(UserDto userDto) {
+        userRepository.save(convertToEntity(userDto));
+        return true;
     }
 
     public boolean isUserExist(User user) {
         return (userRepository.findByEmail(user.getEmail()).isPresent())
-                || (userRepository.findByLogin(user.getLogin()).isPresent());
+                || (userRepository.findByUsername(user.getUsername()).isPresent());
     }
 
     public Object allUsers() {
@@ -148,7 +178,24 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        if (userRepository.findByUsername(usernameOrEmail).isPresent()) {
+
+            return UserPrincipal.create(userRepository.findByUsername(usernameOrEmail).get());
+        } else if (userRepository.findByEmail(usernameOrEmail).isPresent()) {
+
+            return UserPrincipal.create(userRepository.findByEmail(usernameOrEmail).get());
+        } else {
+
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id)
+        );
+
+        return UserPrincipal.create(user);
     }
 }

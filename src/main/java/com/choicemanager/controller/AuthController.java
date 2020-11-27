@@ -2,7 +2,6 @@ package com.choicemanager.controller;
 
 import com.choicemanager.payload.AuthResponse;
 import com.choicemanager.payload.LoginRequest;
-import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.TokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,28 +21,25 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
 
-    private final UserRepository userRepository;
 
-    AuthController(AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserRepository userRepository) {
+    AuthController(AuthenticationManager authenticationManager, TokenProvider tokenProvider) {
 
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
-        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getUsernameOrEmail(),
                         loginRequest.getPassword()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Long id = (userRepository.findByEmail(loginRequest.getEmail()).get().getId());
         String token = tokenProvider.createToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(token, id));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

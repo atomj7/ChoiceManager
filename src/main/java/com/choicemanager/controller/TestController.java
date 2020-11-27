@@ -1,14 +1,15 @@
 package com.choicemanager.controller;
 
-import com.choicemanager.domain.Answer;
-import com.choicemanager.domain.AnswerWrapper;
-import com.choicemanager.domain.CategoryWrapper;
-import com.choicemanager.domain.CustomErrorResponse;
+import com.choicemanager.domain.*;
+import com.choicemanager.exception.ResourceNotFoundException;
+import com.choicemanager.repository.UserRepository;
+import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.TestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 @RestController
 public class TestController {
 
+    private final UserRepository userRepository;
     private final TestService testService;
 
-    public TestController(TestService testService) {
+    public TestController(UserRepository userRepository, TestService testService) {
+        this.userRepository = userRepository;
         this.testService = testService;
     }
 
@@ -39,14 +42,19 @@ public class TestController {
 
     @Operation(summary = "Put answers to database")
     @PostMapping("/test")
-    public ResponseEntity<?> saveAnswers(@RequestBody
-                                         @Parameter(name = "answerList",
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> saveAnswers(@CurrentUser UserPrincipal userPrincipal,
+                                         @RequestBody @Parameter(name = "answerList",
                                                  description = "Answer list wrapped in \"answers\" object")
                                                  AnswerWrapper answerWrapper) {
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        Long userId = user.getId();
+
         CustomErrorResponse errors = new CustomErrorResponse();
         ArrayList<Answer> createdAnswerList = new ArrayList<>();
 
-        testService.saveAnswers(errors, answerWrapper, createdAnswerList);
+        testService.saveAnswers(errors, userId, answerWrapper, createdAnswerList);
 
         if (errors.getError() == null || errors.getError().isEmpty()) {
             return ResponseEntity.ok(createdAnswerList.stream().map(Answer::getId));

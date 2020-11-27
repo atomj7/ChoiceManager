@@ -1,20 +1,19 @@
 create sequence hibernate_sequence start 1 increment 1;
 create table usr
 (
-    id              int8    not null,
-    is_activated    boolean,
-    activation_code varchar(255),
-    active          boolean not null,
+    id              bigint  not null,
+    surname         varchar(255),
+    username        varchar(255),
     email           varchar(255),
-    gender          varchar(255),
-    google_auth_id  varchar(255),
-    last_visit      timestamp,
-    locale          varchar(255),
-    login           varchar(255),
     name            varchar(255),
     password        varchar(255),
-    surname         varchar(255),
+    activation_code varchar(255),
+    email_confirmed boolean not null,
+    active          boolean not null,
+    gender          varchar(255),
     image_url       varchar(255),
+    last_visit      timestamp,
+    locale          varchar(255),
     provider        varchar(255),
     provider_id     varchar(255),
     primary key (id)
@@ -103,7 +102,7 @@ alter table if exists usr
     add constraint usr_email_uk unique (email);
 
 alter table if exists usr
-    add constraint usr_login_uk unique (login);
+    add constraint usr_login_uk unique (username);
 
 alter table if exists answers
     add constraint answers_question_fk foreign key (question_id) references questions;
