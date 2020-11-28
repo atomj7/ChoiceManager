@@ -92,9 +92,9 @@ create table usr_goals
 
 create table goals_tasks
 (
-    goal_id int8 not null,
+    goals_id int8 not null,
     tasks_id int8 not null,
-    primary key (goal_id, tasks_id)
+    primary key (goals_id, tasks_id)
 );
 
 

@@ -26,8 +26,8 @@ public class Task {
     @NotNull
     private boolean isDone;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    private Goal goal;
+    @ManyToMany(mappedBy = "tasks",cascade = CascadeType.ALL)
+    private Set<Goal> goals;
 
     public Task() {}
 
@@ -40,7 +40,7 @@ public class Task {
         this.id = task.getId();
         this.name = task.getName();
         this.isDone = task.isDone();
-        this.goal = task.getGoal();
+        this.goals= task.getGoals();
 
     }
 

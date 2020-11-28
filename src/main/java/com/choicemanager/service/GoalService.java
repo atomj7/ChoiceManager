@@ -15,13 +15,9 @@ import java.util.*;
 public class GoalService {
 
     private final GoalRepository goalRepository;
-    private final UserRepository userRepository;
-    private  final TaskRepository taskRepository;
 
-    public GoalService(GoalRepository goalRepository, UserRepository userRepository, TaskRepository taskRepository) {
+    public GoalService(GoalRepository goalRepository) {
         this.goalRepository = goalRepository;
-        this.userRepository = userRepository;
-        this.taskRepository = taskRepository;
     }
 
     @Transactional
@@ -36,11 +32,11 @@ public class GoalService {
             }
             goal.setUsers(goal.getUsers());
 
-           /* for (Task newTask : goal.getTasks())
+           for (Task newTask : goal.getTasks())
             {
                 goal.getTasks().add(newTask);
             }
-            goal.setTasks(goal.getTasks());*/
+            goal.setTasks(goal.getTasks());
 
         }
         else return false;

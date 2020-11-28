@@ -34,7 +34,8 @@ public class Goal {
     @ManyToMany(mappedBy = "goals")
     private Set<User> users;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
     public Goal () {}
