@@ -50,12 +50,12 @@ public class TestController {
         Long userId = user.getId();
 
         CustomErrorResponse errors = new CustomErrorResponse();
-        ArrayList<Answer> createdAnswerList = new ArrayList<>();
+        ArrayList<Answer> recordedAnswerList = new ArrayList<>();
 
-        testService.saveAnswers(errors, userId, answerWrapper, createdAnswerList);
+        testService.saveAnswers(errors, userId, answerWrapper, recordedAnswerList);
 
         if (errors.getError() == null || errors.getError().isEmpty()) {
-            return ResponseEntity.ok(createdAnswerList.stream().map(Answer::getId));
+            return ResponseEntity.ok(recordedAnswerList.stream().map(Answer::getId));
         }
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }

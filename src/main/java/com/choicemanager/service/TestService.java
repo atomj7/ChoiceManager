@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service("TestService")
 public class TestService {
@@ -54,7 +56,9 @@ public class TestService {
         return categories;
     }
 
-    public void saveAnswers(CustomErrorResponse errors, Long userId, AnswerWrapper answerWrapper, ArrayList<Answer> createdAnswerList) {
+    public void saveAnswers(CustomErrorResponse errors, Long userId, AnswerWrapper answerWrapper, ArrayList<Answer> recordedAnswerList) {
+        ArrayList<Answer> tempAnswerList = new ArrayList<>();
+
         for (Answer answer : answerWrapper.getAnswers()) {
             Long questionId = answer.getQuestion().getId();
             String value = answer.getValue();
@@ -93,14 +97,17 @@ public class TestService {
             User user = userOptional.get();
             answer.setQuestion(question);
             answer.setUser(user);
-            Answer createdAnswer = answerRepository.save(answer);
-            if (createdAnswer == null) {
-                errors.setError("No answers were saved");
-                errors.setStatus(HttpStatus.NOT_FOUND.value());
-                return;
-            } else {
-                createdAnswerList.add(createdAnswer);
-            }
+            tempAnswerList.add(answer);
+        }
+
+        List<Answer> tempRecordedList =
+                StreamSupport.stream(answerRepository.saveAll(tempAnswerList).spliterator(), false)
+                        .collect(Collectors.toList());
+        if (tempRecordedList.isEmpty()) {
+            errors.setError("No answers were saved");
+            errors.setStatus(HttpStatus.NOT_FOUND.value());
+        } else {
+            recordedAnswerList.addAll(tempRecordedList);
         }
     }
 
