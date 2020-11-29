@@ -4,6 +4,7 @@ import com.choicemanager.domain.User;
 import com.choicemanager.security.*;
 import com.choicemanager.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.choicemanager.service.*;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -144,7 +145,14 @@ import javax.sql.DataSource;
 //    }
 //
 //}
+
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
@@ -172,8 +180,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -183,13 +189,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .oauth2Login()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/auth/*", "/registration").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
     }
 }

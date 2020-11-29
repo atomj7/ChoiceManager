@@ -3,8 +3,15 @@ package com.choicemanager.security.oauth2;
 import java.util.Map;
 
 public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
+
+    private final String name;
+    private final String surname;
+
     public FacebookOAuth2UserInfo(Map<String, Object> attributes) {
         super(attributes);
+        String[] nameAndSurname = getUserNameAndSurname((String) attributes.get("name"));
+        name = nameAndSurname[0];
+        surname = nameAndSurname[1];
     }
 
     @Override
@@ -14,12 +21,12 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getName() {
-        return (String) attributes.get("first_name");
+        return name;
     }
 
     @Override
     public String getSurname() {
-        return (String) attributes.get("last_name");
+        return surname;
     }
 
     @Override
@@ -39,5 +46,9 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
             }
         }
         return null;
+    }
+    private String[] getUserNameAndSurname(String nameAndSurname) {
+        String delimiter = " ";
+        return nameAndSurname.split(delimiter);
     }
 }

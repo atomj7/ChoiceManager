@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,7 +63,7 @@ public class UserService{
             String message = String.format(
                     "Hello, %s %s! \n" +
                             "Welcome to Choice Manager.\n " +
-                            "Please, visit next link: http://%s:8080/activate/%s to activate your account.\n " +
+                            "Please, visit next link: http://%s:3000/activate/%s to activate your account.\n " +
                             "Have a nice day!",
                     newUser.getName(),
                     newUser.getSurname(),

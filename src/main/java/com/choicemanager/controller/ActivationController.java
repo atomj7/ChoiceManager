@@ -28,4 +28,5 @@ public class ActivationController {
                 .body(Map.of("message",
                         "Activation code is not found!"));
     }
+
 }

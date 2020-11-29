@@ -38,7 +38,6 @@ public class User implements Serializable, UserDetails {
     @NotBlank(message = "Name can not be empty")
     private String name;
 
-    @NotBlank(message = "Surname can not be empty")
     private String surname;
 
     private String imageUrl;
