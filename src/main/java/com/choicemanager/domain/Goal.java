@@ -3,6 +3,10 @@ package com.choicemanager.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,9 +25,6 @@ public class Goal {
     private String name;
 
     @NotNull
-    private String category;
-
-    @NotNull
     private String explanation;
 
     @Column(name="isDone")
@@ -34,27 +35,25 @@ public class Goal {
     @ManyToMany(mappedBy = "goals")
     private Set<User> users;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @OneToMany( mappedBy="goals", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks;
 
     public Goal () {}
 
-    public Goal(long id, String Name, String category, String explanation){
+    public Goal(long id, String Name, String explanation){
         this.id = id;
         this.name = Name;
-        this.category = category;
         this. explanation = explanation;
     }
 
     public Goal(Goal goal){
         this.id = goal.getId();
         this.name = goal.getName();
-        this.category = goal.getCategory();
         this.explanation = goal.getExplanation();
         this.isDone = goal.isDone();
         this.users = getUsers();
-        this.tasks = goal.getTasks();
+       // this.tasks = goal.getTasks();
 
     }
 

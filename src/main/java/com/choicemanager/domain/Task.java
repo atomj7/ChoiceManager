@@ -4,6 +4,7 @@ package com.choicemanager.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -26,8 +27,11 @@ public class Task {
     @NotNull
     private boolean isDone;
 
-    @ManyToMany(mappedBy = "tasks",cascade = CascadeType.ALL)
-    private Set<Goal> goals;
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "goals_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Goal goals;
 
     public Task() {}
 

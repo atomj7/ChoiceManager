@@ -1,6 +1,7 @@
 package com.choicemanager.service;
 
 import com.choicemanager.domain.Goal;
+import com.choicemanager.domain.GoalWrapper;
 import com.choicemanager.domain.Task;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
@@ -15,52 +16,60 @@ import java.util.*;
 public class GoalService {
 
     private final GoalRepository goalRepository;
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public GoalService(GoalRepository goalRepository) {
+    public GoalService(GoalRepository goalRepository, TaskRepository taskRepository, UserRepository userRepository) {
         this.goalRepository = goalRepository;
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    @Transactional
-    public boolean AddGoal(Goal goal, Optional<User> user) {
-        if(goalRepository.findById(goal.getId()).isPresent()) {
+    public boolean AddGoal(Goal goal, User user) {
+        if(goalRepository.findByName(goal.getName()) != null) {
            return false;
        }
-        if(user.isPresent()) {
             for (Goal newGoal : Collections.singleton(goal))
             {
-                user.get().getGoals().add(newGoal);
+                user.getGoals().add(newGoal);
             }
             goal.setUsers(goal.getUsers());
 
            for (Task newTask : goal.getTasks())
             {
-                goal.getTasks().add(newTask);
+               newTask.setGoals(goal);
+               goal.getTasks().add(newTask);
             }
             goal.setTasks(goal.getTasks());
 
+        goalRepository.save(goal);
+        return true;
+    }
+
+
+    public boolean EditGoal(Goal goal, User user){
+        for (Task newTask : goal.getTasks())
+        {
+            newTask.setGoals(goal);
+            goal.getTasks().add(newTask);
         }
-        else return false;
-        goalRepository.save(goal);
-        return true;
-    }
-
-    public boolean EditGoal(Goal goal){
-
         goalRepository.save(goal);
 
         return true;
     }
 
-    public boolean DeleteGoal(Goal goal) {
-        goalRepository.delete(goal);
+    public boolean DeleteGoal(Long id) {
+        goalRepository.deleteById(id);
+
         return true;
     }
 
-    @Transactional
-    public ArrayList<Goal> GetGoals(Optional<User> userOptional) {
-            User user = userOptional.get();
-            Set<Goal> goals = user.getGoals();
-            return new ArrayList<Goal>(goals);
+    public GoalWrapper GetGoals(User userOptional) {
+        Set<Goal> goals =  userOptional.getGoals();
+        ArrayList<Goal> goalArrayList = new ArrayList<>(goals);
+        GoalWrapper goalWrapper = new GoalWrapper();
+        goalWrapper.setGoals(goalArrayList);
+            return goalWrapper;
     }
 
 }

@@ -63,7 +63,6 @@ create table goals
     id          bigint not null
         constraint goals_pkey
             primary key,
-    category    varchar(255),
     explanation varchar(255),
     name        varchar(255),
     is_done boolean
@@ -75,7 +74,8 @@ create table tasks
         constraint tasks_pkey
             primary key,
     name    varchar(255),
-    is_done boolean
+    is_done boolean,
+    goals_id bigint not null
 );
 
 create table usr_goals
@@ -84,17 +84,9 @@ create table usr_goals
         constraint fk41ixqoo18h7uyp3gfmgiyxpgw
             references usr,
     goals_id bigint not null
-        constraint fk7nxypflwado4ltk7angw0jngk
             references goals,
     constraint usr_goals_pkey
         primary key (users_id, goals_id)
-);
-
-create table goals_tasks
-(
-    goals_id int8 not null,
-    tasks_id int8 not null,
-    primary key (goals_id, tasks_id)
 );
 
 
@@ -118,3 +110,9 @@ alter table if exists usr_roles
 
 alter table if exists usr_roles
     add constraint usr_roles_usr_fk foreign key (users_id) references usr;
+
+alter table if exists tasks
+    add constraint tasks_goals_fk foreign key (goals_id) references goals;
+
+alter table if exists usr_goals
+    add constraint fk7nxypflwado4ltk7angw0jngk foreign key (goals_id) references goals  on delete cascade;
