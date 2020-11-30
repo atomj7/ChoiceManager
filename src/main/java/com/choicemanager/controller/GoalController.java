@@ -69,7 +69,7 @@ public class GoalController {
     ResponseEntity<?> editGoal(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid Goal goal, BindingResult bindingResult) {
         User userOptional = userService.getCurrentUser(userPrincipal);
         if(userOptional != null) {
-            return ResponseEntity.ok(goalService.EditGoal(goal, userOptional));
+            return ResponseEntity.ok(goalService.EditGoal(goal));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("user not found");

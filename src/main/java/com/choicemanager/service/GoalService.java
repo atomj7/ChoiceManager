@@ -5,10 +5,8 @@ import com.choicemanager.domain.GoalWrapper;
 import com.choicemanager.domain.Task;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
-import com.choicemanager.repository.TaskRepository;
-import com.choicemanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.*;
 
@@ -16,13 +14,9 @@ import java.util.*;
 public class GoalService {
 
     private final GoalRepository goalRepository;
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
 
-    public GoalService(GoalRepository goalRepository, TaskRepository taskRepository, UserRepository userRepository) {
+    public GoalService(GoalRepository goalRepository) {
         this.goalRepository = goalRepository;
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
     }
 
     public boolean AddGoal(Goal goal, User user) {
@@ -46,8 +40,7 @@ public class GoalService {
         return true;
     }
 
-
-    public boolean EditGoal(Goal goal, User user){
+    public boolean EditGoal(Goal goal){
         for (Task newTask : goal.getTasks())
         {
             newTask.setGoals(goal);

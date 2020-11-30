@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
-import java.util.Set;
+
 
 @Entity
 @Data

@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -53,7 +49,7 @@ public class Goal {
         this.explanation = goal.getExplanation();
         this.isDone = goal.isDone();
         this.users = getUsers();
-       // this.tasks = goal.getTasks();
+        this.tasks = goal.getTasks();
 
     }
 
