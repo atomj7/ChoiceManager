@@ -1,10 +1,9 @@
 package com.choicemanager.controller;
 
 import com.choicemanager.domain.*;
-import com.choicemanager.exception.ResourceNotFoundException;
-import com.choicemanager.repository.UserRepository;
 import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.TestService;
+import com.choicemanager.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
@@ -20,11 +19,11 @@ import java.util.ArrayList;
 @RestController
 public class TestController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final TestService testService;
 
-    public TestController(UserRepository userRepository, TestService testService) {
-        this.userRepository = userRepository;
+    public TestController(UserService userService, TestService testService) {
+        this.userService = userService;
         this.testService = testService;
     }
 
@@ -47,17 +46,16 @@ public class TestController {
                                          @RequestBody @Parameter(name = "answerList",
                                                  description = "Answer list wrapped in \"answers\" object")
                                                  AnswerWrapper answerWrapper) {
-        User user = userRepository.findById(userPrincipal.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        User user = userService.getCurrentUser(userPrincipal);
         Long userId = user.getId();
 
         CustomErrorResponse errors = new CustomErrorResponse();
-        ArrayList<Answer> createdAnswerList = new ArrayList<>();
+        ArrayList<Answer> recordedAnswerList = new ArrayList<>();
 
-        testService.saveAnswers(errors, userId, answerWrapper, createdAnswerList);
+        testService.saveAnswers(errors, userId, answerWrapper, recordedAnswerList);
 
         if (errors.getError() == null || errors.getError().isEmpty()) {
-            return ResponseEntity.ok(createdAnswerList.stream().map(Answer::getId));
+            return ResponseEntity.ok(recordedAnswerList.stream().map(Answer::getId));
         }
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
