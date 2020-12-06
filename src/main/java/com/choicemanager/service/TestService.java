@@ -107,6 +107,16 @@ public class TestService {
             errors.setError("No answers were saved");
             errors.setStatus(HttpStatus.NOT_FOUND.value());
         } else {
+            for (Answer tempAnswer : tempRecordedList) {
+                if (tempAnswer.getUser().isTested()) {
+                    break;
+                }
+                if (tempAnswer.getQuestion().getCategory().getId() == categoryRepository.count()) {
+                    User user = userRepository.findById(userId).get();
+                    user.setTested(true);
+                    userRepository.save(user);
+                }
+            }
             recordedAnswerList.addAll(tempRecordedList);
         }
     }

@@ -69,6 +69,8 @@ public class User implements Serializable, UserDetails {
 
     private String providerId;
 
+    private boolean isTested;
+
     public User() {
     }
 
@@ -91,6 +93,7 @@ public class User implements Serializable, UserDetails {
         this.imageUrl = user.getImageUrl();
         this.gender = user.getGender();
         this.lastVisit = user.getLastVisit();
+        this.active = user.active;
         this.locale = user.getLocale();
         this.roles = user.getRoles();
         this.goals = user.getGoals();
@@ -98,6 +101,7 @@ public class User implements Serializable, UserDetails {
         this.activationCode = user.activationCode;
         this.provider = user.provider;
         this.providerId = user.providerId;
+        this.isTested = user.isTested;
     }
 
     @Override
