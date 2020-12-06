@@ -47,6 +47,7 @@ public class TestService {
             Optional<Category> optionalCategory = categoryRepository.findById(id);
             if (optionalCategory.isPresent()) {
                 categories.setCategories(new ArrayList<>(List.of(optionalCategory.get())));
+                categories.setCategoryNumber(categoryRepository.count());
             } else {
                 errors.setError("Category id not found : " + id);
                 errors.setStatus(HttpStatus.NOT_FOUND.value());
