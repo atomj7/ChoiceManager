@@ -65,7 +65,8 @@ create table goals
             primary key,
     explanation varchar(255),
     name        varchar(255),
-    is_done boolean
+    is_done boolean,
+    progress double precision
 );
 
 create table tasks

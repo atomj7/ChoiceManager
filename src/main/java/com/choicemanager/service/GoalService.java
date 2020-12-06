@@ -35,15 +35,36 @@ public class GoalService {
             }
             goal.setTasks(goal.getTasks());
 
+        goal.setProgress(0);
         goalRepository.save(goal);
     }
 
     public boolean EditGoal(Goal goal){
+        double value =0;
         for (Task newTask : goal.getTasks())
         {
+            if(newTask.isDone())
+            {
+                value++;
+            }
             newTask.setGoals(goal);
             goal.getTasks().add(newTask);
         }
+        if(goal.isDone())
+        {
+            goal.setProgress(100);
+            for (Task newTask : goal.getTasks())
+            {
+                newTask.setDone(true);
+            }
+
+        }
+        else if(value == 0)
+        {
+            goal.setProgress(0);
+        }
+        else
+        goal.setProgress(value/(goal.getTasks().size()+1)*100);
         goalRepository.save(goal);
 
         return true;
@@ -58,6 +79,7 @@ public class GoalService {
     public GoalWrapper GetGoals(User userOptional) {
         Set<Goal> goals =  userOptional.getGoals();
         ArrayList<Goal> goalArrayList = new ArrayList<>(goals);
+        goalArrayList.sort(Comparator.comparing(Goal::getId));
         GoalWrapper goalWrapper = new GoalWrapper();
         goalWrapper.setGoals(goalArrayList);
             return goalWrapper;
