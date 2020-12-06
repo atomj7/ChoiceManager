@@ -14,7 +14,6 @@ public class Goal {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @NotNull

@@ -5,6 +5,7 @@ import com.choicemanager.domain.GoalWrapper;
 import com.choicemanager.domain.Task;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -19,10 +20,8 @@ public class GoalService {
         this.goalRepository = goalRepository;
     }
 
-    public boolean AddGoal(Goal goal, User user) {
-        if(goalRepository.findByName(goal.getName()) != null) {
-           return false;
-       }
+    public void AddGoal(Goal goal, User user) {
+
             for (Goal newGoal : Collections.singleton(goal))
             {
                 user.getGoals().add(newGoal);
@@ -37,7 +36,6 @@ public class GoalService {
             goal.setTasks(goal.getTasks());
 
         goalRepository.save(goal);
-        return true;
     }
 
     public boolean EditGoal(Goal goal){
@@ -64,5 +62,6 @@ public class GoalService {
         goalWrapper.setGoals(goalArrayList);
             return goalWrapper;
     }
+
 
 }
