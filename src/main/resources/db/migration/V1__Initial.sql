@@ -16,6 +16,7 @@ create table usr
     locale          varchar(255),
     provider        varchar(255),
     provider_id     varchar(255),
+    is_tested       boolean not null,
     primary key (id)
 );
 

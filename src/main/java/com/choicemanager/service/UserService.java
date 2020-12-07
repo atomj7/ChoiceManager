@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -64,7 +65,7 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s %s! \n" +
                             "Welcome to Choice Manager.\n " +
-                            "Please, visit next link: http://%s:8080/activate/%s to activate your account.\n " +
+                            "Please, visit next link: http://%s:3000/activate/%s to activate your account.\n " +
                             "Have a nice day!",
                     newUser.getName(),
                     newUser.getSurname(),
@@ -92,6 +93,12 @@ public class UserService implements UserDetailsService {
 
     public boolean isActivated(Long id) {
         return userRepository.findById(id).map(User::isEmailConfirmed).orElse(false);
+    }
+
+    public boolean isTested(Authentication authentication){
+        return userRepository.findById(
+                ((UserPrincipal)authentication.getPrincipal()).getId()
+        ).get().isTested();
     }
 
     public String getActivationCodeById(Long id) {
