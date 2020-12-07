@@ -1,9 +1,6 @@
 package com.choicemanager.service;
 
-import com.choicemanager.domain.Goal;
-import com.choicemanager.domain.GoalWrapper;
-import com.choicemanager.domain.Task;
-import com.choicemanager.domain.User;
+import com.choicemanager.domain.*;
 import com.choicemanager.repository.GoalRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +35,7 @@ public class GoalService {
         goalRepository.save(goal);
     }
 
-    public Double EditGoal(Goal goal){
+    public GoalDto EditGoal(Goal goal){
         double value =0;
         for (Task newTask : goal.getTasks())
         {
@@ -66,7 +63,9 @@ public class GoalService {
         goal.setProgress(value/(goal.getTasks().size()+1)*100);
         goalRepository.save(goal);
 
-        return goal.getProgress();
+        GoalDto goalDto = new GoalDto();
+        goalDto.setProgress(goal.getProgress());
+        return goalDto;
     }
 
     public boolean DeleteGoal(Long id) {
