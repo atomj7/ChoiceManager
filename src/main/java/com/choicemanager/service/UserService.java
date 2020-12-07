@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s %s! \n" +
                             "Welcome to Choice Manager.\n " +
-                            "Please, visit next link: http://%s:8080/activate/%s to activate your account.\n " +
+                            "Please, visit next link: http://%s:3000/activate/%s to activate your account.\n " +
                             "Have a nice day!",
                     newUser.getName(),
                     newUser.getSurname(),
