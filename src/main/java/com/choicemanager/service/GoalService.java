@@ -5,7 +5,6 @@ import com.choicemanager.domain.GoalWrapper;
 import com.choicemanager.domain.Task;
 import com.choicemanager.domain.User;
 import com.choicemanager.repository.GoalRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -39,7 +38,7 @@ public class GoalService {
         goalRepository.save(goal);
     }
 
-    public boolean EditGoal(Goal goal){
+    public Double EditGoal(Goal goal){
         double value =0;
         for (Task newTask : goal.getTasks())
         {
@@ -67,21 +66,28 @@ public class GoalService {
         goal.setProgress(value/(goal.getTasks().size()+1)*100);
         goalRepository.save(goal);
 
-        return true;
+        return goal.getProgress();
     }
 
     public boolean DeleteGoal(Long id) {
         goalRepository.deleteById(id);
-
         return true;
     }
 
     public GoalWrapper GetGoals(User userOptional) {
         Set<Goal> goals =  userOptional.getGoals();
-        ArrayList<Goal> goalArrayList = new ArrayList<>(goals);
-        goalArrayList.sort(Comparator.comparing(Goal::getId));
+        ArrayList<Goal> newGoalArrayList = new ArrayList<>();
+        for (Goal newGoal : goals)
+        {
+            ArrayList<Task> taskArrayList = new ArrayList<>(newGoal.getTasks());
+            taskArrayList.sort(Comparator.comparing(Task::getId));
+            Set<Task> taskSet = new LinkedHashSet<>(taskArrayList);
+            newGoal.setTasks(taskSet);
+            newGoalArrayList.add(newGoal);
+        }
+        newGoalArrayList.sort(Comparator.comparing(Goal::getId));
         GoalWrapper goalWrapper = new GoalWrapper();
-        goalWrapper.setGoals(goalArrayList);
+        goalWrapper.setGoals(newGoalArrayList);
             return goalWrapper;
     }
 
