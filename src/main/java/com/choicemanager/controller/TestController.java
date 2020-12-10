@@ -29,9 +29,11 @@ public class TestController {
 
     @Operation(summary = "Get Category or list of Categories with Questions")
     @GetMapping("/test")
-    public ResponseEntity<?> getTest(@Parameter(description = "ID of a specific category if required") Long id) {
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getTest(@CurrentUser UserPrincipal userPrincipal,
+                                     @Parameter(description = "ID of a specific category if required") Long pageNumber) {
         CustomErrorResponse errors = new CustomErrorResponse();
-        CategoryWrapper categories = testService.getCategories(errors, id);
+        CategoryWrapper categories = testService.getCategories(errors, pageNumber);
 
         if (errors.getError() == null || errors.getError().isEmpty()) {
             return ResponseEntity.ok(categories);

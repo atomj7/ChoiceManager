@@ -11,7 +11,12 @@ public class AuthResponse {
     @Getter
     private final String tokenType = "Bearer";
 
-    public AuthResponse(String accessToken) {
+    @Getter
+    @Setter
+    private boolean isTested;
+
+    public AuthResponse(String accessToken, boolean isTested) {
         this.accessToken = accessToken;
+        this.isTested = isTested;
     }
 }

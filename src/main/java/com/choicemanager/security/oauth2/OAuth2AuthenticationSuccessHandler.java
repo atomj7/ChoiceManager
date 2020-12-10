@@ -1,7 +1,9 @@
-package com.choicemanager.security;
+package com.choicemanager.security.oauth2;
 
 import com.choicemanager.config.AppProperties;
 import com.choicemanager.exception.BadRequestException;
+import com.choicemanager.security.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.choicemanager.security.TokenProvider;
 import com.choicemanager.utils.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,7 +30,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
-    @Autowired
     OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider, AppProperties appProperties,
                                        HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;

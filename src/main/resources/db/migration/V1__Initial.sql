@@ -16,6 +16,7 @@ create table usr
     locale          varchar(255),
     provider        varchar(255),
     provider_id     varchar(255),
+    is_tested       boolean not null,
     primary key (id)
 );
 
@@ -65,7 +66,8 @@ create table goals
             primary key,
     explanation varchar(255),
     name        varchar(255),
-    is_done boolean
+    is_done boolean,
+    progress double precision
 );
 
 create table tasks
@@ -83,8 +85,8 @@ create table usr_goals
     users_id bigint not null
         constraint fk41ixqoo18h7uyp3gfmgiyxpgw
             references usr,
-    goals_id bigint not null
-            references goals,
+    goals_id bigint not null,
+        constraint usr_goals_goals_id_fkey foreign key (goals_id) references goals on delete cascade,
     constraint usr_goals_pkey
         primary key (users_id, goals_id)
 );
@@ -113,6 +115,3 @@ alter table if exists usr_roles
 
 alter table if exists tasks
     add constraint tasks_goals_fk foreign key (goals_id) references goals;
-
-alter table if exists usr_goals
-    add constraint fk7nxypflwado4ltk7angw0jngk foreign key (goals_id) references goals  on delete cascade;

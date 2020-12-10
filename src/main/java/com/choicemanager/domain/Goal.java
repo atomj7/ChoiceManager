@@ -14,7 +14,6 @@ public class Goal {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @NotNull
@@ -23,9 +22,11 @@ public class Goal {
     @NotNull
     private String explanation;
 
-    @Column(name="isDone")
     @NotNull
     private boolean isDone;
+
+    @NotNull
+    private double progress;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "goals")
@@ -50,6 +51,7 @@ public class Goal {
         this.isDone = goal.isDone();
         this.users = getUsers();
         this.tasks = goal.getTasks();
+        this.progress = goal.getProgress();
 
     }
 

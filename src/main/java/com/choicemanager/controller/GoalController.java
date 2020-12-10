@@ -43,11 +43,10 @@ public class GoalController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(errorsMap);
         }
-        if (!goalService.AddGoal(goal, user)) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
-                    Map.of("message", "goal already exist"));
-        }
-        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(
+
+        goalService.AddGoal(goal, user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 Map.of("message", "goal created"));
     }
 
@@ -66,7 +65,7 @@ public class GoalController {
     @PutMapping("/goals")
     public @ResponseBody
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<?> editGoal(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid Goal goal, BindingResult bindingResult) {
+    ResponseEntity<?> editGoal(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid Goal goal) {
         User userOptional = userService.getCurrentUser(userPrincipal);
         if(userOptional != null) {
             return ResponseEntity.ok(goalService.EditGoal(goal));

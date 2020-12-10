@@ -20,7 +20,7 @@ public class UserDto {
     @NotBlank(message = "Surname can not be empty")
     private String surname;
     private String imageUrl;
-
+    private boolean emailConfirmed;
     public UserDto() {
     }
 }
