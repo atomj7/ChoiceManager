@@ -22,11 +22,6 @@ public class RegistrationController {
         this.userService = userService;
     }
 
-    @GetMapping("/registration")
-    public String registration() {
-        return "/registration";
-    }
-
     @PostMapping(value = "/registration")
     public ResponseEntity<?> userRegistration(@RequestBody @Valid User userData,
                                               BindingResult bindingResult) {
