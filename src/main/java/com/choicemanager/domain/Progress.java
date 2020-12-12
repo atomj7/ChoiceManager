@@ -3,8 +3,7 @@ package com.choicemanager.domain;
 import lombok.Data;
 
 @Data
-public class GoalDto {
+public class Progress {
 
-    long id;
-    String massage;
+    double progress;
 }
