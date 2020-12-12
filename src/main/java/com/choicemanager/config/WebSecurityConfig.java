@@ -1,12 +1,11 @@
 package com.choicemanager.config;
 
-import com.choicemanager.domain.User;
 import com.choicemanager.security.*;
 import com.choicemanager.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.choicemanager.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.choicemanager.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -131,7 +128,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userService(customOAuth2UserService)
             .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+            .and()
+                .logout()
+                .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID");
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -6,15 +6,20 @@ import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.RadarChartService;
 import com.choicemanager.service.UserService;
 import com.choicemanager.utils.ErrorUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/profile")
@@ -27,6 +32,9 @@ public class ProfileController {
         this.radarChartService = radarChartService;
         this.userService = userService;
     }
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
@@ -61,5 +69,25 @@ public class ProfileController {
         }
         return new ResponseEntity<>("save error", HttpStatus.I_AM_A_TEAPOT);
 
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        File uploadDir = new File(uploadPath);
+        if(!uploadDir.exists()) {
+            return new ResponseEntity<>("upload path error", HttpStatus.I_AM_A_TEAPOT);
+        }
+        String uuidFile = UUID.randomUUID().toString();
+        String filename = uuidFile+"."+file.getOriginalFilename();
+        file.transferTo(new File(uploadPath+"/"+filename));
+        User user = userService.getCurrentUser(userPrincipal);
+        user.setImageUrl(uploadPath+"/"+filename);
+        if(userService.saveUser(user)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("save error", HttpStatus.I_AM_A_TEAPOT);
     }
 }
