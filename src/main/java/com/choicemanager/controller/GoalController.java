@@ -44,10 +44,7 @@ public class GoalController {
                     .body(errorsMap);
         }
 
-        goalService.AddGoal(goal, user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                Map.of("message", "goal created"));
+        return ResponseEntity.ok(goalService.AddGoal(goal, user));
     }
 
     @GetMapping("/goals")

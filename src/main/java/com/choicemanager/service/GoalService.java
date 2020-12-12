@@ -16,7 +16,7 @@ public class GoalService {
         this.goalRepository = goalRepository;
     }
 
-    public void AddGoal(Goal goal, User user) {
+    public GoalDto AddGoal(Goal goal, User user) {
 
             for (Goal newGoal : Collections.singleton(goal))
             {
@@ -33,9 +33,14 @@ public class GoalService {
 
         goal.setProgress(0);
         goalRepository.save(goal);
+
+        GoalDto goalDto = new GoalDto();
+        goalDto.setId(goal.getId());
+        goalDto.setMassage("Goal created");
+        return goalDto;
     }
 
-    public GoalDto EditGoal(Goal goal){
+    public Progress EditGoal(Goal goal){
         double value =0;
         for (Task newTask : goal.getTasks())
         {
@@ -63,9 +68,9 @@ public class GoalService {
         goal.setProgress(value/(goal.getTasks().size()+1)*100);
         goalRepository.save(goal);
 
-        GoalDto goalDto = new GoalDto();
-        goalDto.setProgress(goal.getProgress());
-        return goalDto;
+        Progress progress = new Progress();
+        progress.setProgress(goal.getProgress());
+        return progress;
     }
 
     public boolean DeleteGoal(Long id) {
