@@ -43,8 +43,10 @@ public class GoalController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(errorsMap);
         }
+        goalService.AddGoal(goal, user);
 
-        return ResponseEntity.ok(goalService.AddGoal(goal, user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                Map.of("message", "goal created"));
     }
 
     @GetMapping("/goals")

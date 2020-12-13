@@ -16,6 +16,7 @@ public class Task {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private long id;
 
     @Column(name="name")
