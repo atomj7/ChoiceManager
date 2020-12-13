@@ -15,7 +15,6 @@ public class Goal {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
     @NotNull
