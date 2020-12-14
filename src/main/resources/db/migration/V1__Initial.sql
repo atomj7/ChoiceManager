@@ -11,7 +11,7 @@ create table usr
     email_confirmed boolean not null,
     active          boolean not null,
     gender          varchar(255),
-    image_url       varchar(255),
+    image_url       text,
     last_visit      timestamp,
     locale          varchar(255),
     provider        varchar(255),

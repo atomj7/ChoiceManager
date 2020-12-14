@@ -6,6 +6,7 @@ import com.choicemanager.security.CurrentUser;
 import com.choicemanager.service.RadarChartService;
 import com.choicemanager.service.UserService;
 import com.choicemanager.utils.ErrorUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/profile")
@@ -80,11 +81,12 @@ public class ProfileController {
         if(!uploadDir.exists()) {
             return new ResponseEntity<>("upload path error", HttpStatus.I_AM_A_TEAPOT);
         }
-        String uuidFile = UUID.randomUUID().toString();
-        String filename = uuidFile+"."+file.getOriginalFilename();
+        String filename = file.getOriginalFilename();
         file.transferTo(new File(uploadPath+"/"+filename));
+        byte[] fileContent = FileUtils.readFileToByteArray(new File(uploadPath+"/"+filename));
+        String encodedString = Base64.getEncoder().encodeToString(fileContent);
         User user = userService.getCurrentUser(userPrincipal);
-        user.setImageUrl(filename);
+        user.setImageUrl(encodedString);
         if(userService.saveUser(user)){
             return new ResponseEntity<>(HttpStatus.OK);
         }
