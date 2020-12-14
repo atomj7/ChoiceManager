@@ -84,7 +84,7 @@ public class ProfileController {
         String filename = uuidFile+"."+file.getOriginalFilename();
         file.transferTo(new File(uploadPath+"/"+filename));
         User user = userService.getCurrentUser(userPrincipal);
-        user.setImageUrl(uploadPath+"/"+filename);
+        user.setImageUrl(filename);
         if(userService.saveUser(user)){
             return new ResponseEntity<>(HttpStatus.OK);
         }
