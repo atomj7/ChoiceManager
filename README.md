@@ -24,7 +24,7 @@
 ##Technologies
 Main technologies we used:  
 
-- Spring Boot
+- Spring Boot 
 - Java EE
 - PostgreSQL
 - Flyway
