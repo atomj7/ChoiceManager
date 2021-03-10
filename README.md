@@ -1,5 +1,7 @@
 #CHOICE MANAGER
+
 ##Description
+
 **Choice Manager** is a site that helps students making choices based on passion, skills and an open mind. The site presents a structured way, in which you will discover new things about yourself and making it clear where you want to take action.  
 
 **Choice Manager** gives a possibility to:  
