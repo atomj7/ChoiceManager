@@ -1,6 +1,6 @@
-#CHOICE MANAGER
+# CHOICE MANAGER
 
-##Description
+## Description
 
 **Choice Manager** is a site that helps students making choices based on passion, skills and an open mind. The site presents a structured way, in which you will discover new things about yourself and making it clear where you want to take action.  
 
@@ -14,7 +14,7 @@
 
 **Choice Manager** is promising project, but it's just on the start of the path.  
 
-##Visuals  
+## Visuals  
 
 - Main page  
 ![gif](https://i.postimg.cc/dtppt4s0/ezgif-com-optimize.gif)
@@ -23,7 +23,7 @@
 - Goal page  
 ![gif3](https://i.postimg.cc/k4cB526P/ezgif-com-gif-maker-5.gif)
 
-##Technologies
+## Technologies
 Main technologies we used:  
 
 - Spring Boot 
@@ -34,7 +34,7 @@ Main technologies we used:
 - Gradle
 - Git
 
-##Authors
+## Authors
 Product owner: Henrik Frederiksen  
 Agile coach: Chamara Bulathsinhala  
 Developed by the **WinX** team:
@@ -48,5 +48,5 @@ Developed by the **WinX** team:
 - Ilya Korolko
 - Stas Lebedyantsev
 
-##Project status
+## Project status
 This project was developed as a part of the ISE Course Autumn 2020 that lasted from 21.09.2020 to 16.12.2020. After the end of the course team **WinX** stopped working on the project. Another team will continue to work on the  **Choice Manager** .
